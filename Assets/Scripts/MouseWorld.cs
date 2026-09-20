@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MouseWorld : MonoBehaviour
 {
 
     private static MouseWorld instance;
+
+    [SerializeField] private LayerMask mousePlaneLayerMask;
+
 
     //// Debug: di chuyển khối cầu tới vị trí con trỏ hợp lệ
     //// Cần visual debugging thì hẵng uncomment
@@ -16,9 +17,6 @@ public class MouseWorld : MonoBehaviour
     //    transform.position = raycastHit.point;
 
     //}
-
-
-    [SerializeField] private LayerMask mousePlaneLayerMask;
 
     private void Awake()
     {
