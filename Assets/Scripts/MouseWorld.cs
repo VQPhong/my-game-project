@@ -8,8 +8,8 @@ public class MouseWorld : MonoBehaviour
     [SerializeField] private LayerMask mousePlaneLayerMask;
 
 
-    //// Debug: di chuyển khối cầu tới vị trí con trỏ hợp lệ
-    //// Cần visual debugging thì hẵng uncomment
+    //// Debug: Move the object (3d-sphere) to the valid mouse each frame
+    //// Uncomment when mouse pointer visual debugging is needed
     //private void Update()
     //{
     //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

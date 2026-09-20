@@ -38,7 +38,7 @@ public class GridSystem
         );
     }
 
-    public void CreateDebugObject(Transform debugPrefab)
+    public void CreateDebugObjects(Transform debugPrefab)
     {
         for (int x = 0; x < width; x++)
         {
