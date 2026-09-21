@@ -1482,7 +1482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007f45a5ffc7ced45a6c4eefd4f6c0d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  cinemachineVirtualCamera: {fileID: 0}
+  cinemachineCamera: {fileID: 81436866}
 --- !u!1 &2142590212
 GameObject:
   m_ObjectHideFlags: 0
