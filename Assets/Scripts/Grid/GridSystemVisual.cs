@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GridSystemVisual : MonoBehaviour
 {
+
     public static GridSystemVisual Instance { get; private set; }
 
 
@@ -27,26 +28,22 @@ public class GridSystemVisual : MonoBehaviour
     private void Start()
     {
         gridSystemVisualSingleArray = new GridSystemVisualSingle[
-                LevelGrid.Instance.GetWidth(),
-                LevelGrid.Instance.GetHeight()
-            ];
+            LevelGrid.Instance.GetWidth(),
+            LevelGrid.Instance.GetHeight()
+        ];
+
         for (int x = 0; x < LevelGrid.Instance.GetWidth(); x++)
         {
             for (int z = 0; z < LevelGrid.Instance.GetHeight(); z++)
             {
                 GridPosition gridPosition = new GridPosition(x, z);
 
-                Transform gridSystemVisualSingleTransform = Instantiate(
-                    gridSystemVisualSinglePrefab,
-                    LevelGrid.Instance.GetWorldPosition(gridPosition),
-                    Quaternion.identity
-                    );
+                Transform gridSystemVisualSingleTransform =
+                    Instantiate(gridSystemVisualSinglePrefab, LevelGrid.Instance.GetWorldPosition(gridPosition), Quaternion.identity);
 
-                gridSystemVisualSingleArray[x, z] = 
-                    gridSystemVisualSingleTransform.GetComponent<GridSystemVisualSingle>();
+                gridSystemVisualSingleArray[x, z] = gridSystemVisualSingleTransform.GetComponent<GridSystemVisualSingle>();
             }
         }
-
     }
 
     private void Update()
@@ -77,9 +74,10 @@ public class GridSystemVisual : MonoBehaviour
     {
         HideAllGridPosition();
 
-        Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
+        BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
 
-        ShowGridPositionList(selectedUnit.GetMoveAction().GetValidActionGridPositionList());
+        ShowGridPositionList(
+            selectedAction.GetValidActionGridPositionList());
     }
 
 }
