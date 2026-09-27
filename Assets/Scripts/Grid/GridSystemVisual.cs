@@ -51,6 +51,7 @@ public class GridSystemVisual : MonoBehaviour
         UpdateGridVisual();
     }
 
+
     public void HideAllGridPosition()
     {
         for (int x = 0; x < LevelGrid.Instance.GetWidth(); x++)

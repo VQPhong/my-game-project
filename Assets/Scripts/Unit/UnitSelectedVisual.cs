@@ -20,10 +20,6 @@ public class UnitSelectedVisual : MonoBehaviour
         UpdateVisual();
     }
 
-    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs empty)
-    {
-        UpdateVisual();
-    }
 
     private void UpdateVisual()
     {
@@ -36,5 +32,12 @@ public class UnitSelectedVisual : MonoBehaviour
             meshRenderer.enabled = false;
         }
     }
+
+
+    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs empty)
+    {
+        UpdateVisual();
+    }
+
 
 }

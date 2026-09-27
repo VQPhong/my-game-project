@@ -23,14 +23,16 @@ public class TurnSystemUI : MonoBehaviour
         UpdateTurnText();
     }
 
-    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
-    {
-        UpdateTurnText();
-    }
 
     private void UpdateTurnText()
     {
         turnNumberText.text = "TURN " + TurnSystem.Instance.GetTurnNumber();
+    }
+
+
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        UpdateTurnText();
     }
 
 }

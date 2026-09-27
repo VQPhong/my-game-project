@@ -28,6 +28,7 @@ public class LevelGrid : MonoBehaviour
         gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
     }
 
+
     public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
@@ -62,16 +63,15 @@ public class LevelGrid : MonoBehaviour
     public bool IsValidGridPosition(GridPosition gridPosition)
         => gridSystem.IsValidGridPosition(gridPosition);
 
-    public int GetWidth() => gridSystem.GetWidth();
-
-    public int GetHeight() => gridSystem.GetHeight();
-
-
     public bool HasAnyUnitOnGridPosition(GridPosition gridPosition)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         return gridObject.HasAnyUnit();
     }
+
+    public int GetWidth() => gridSystem.GetWidth();
+
+    public int GetHeight() => gridSystem.GetHeight();
 
 
 }

@@ -59,6 +59,7 @@ public class UnitActionSystem : MonoBehaviour
         HandleSelectedAction();
     }
 
+
     private void HandleSelectedAction()
     {
         if (Input.GetMouseButtonDown(0))
@@ -70,7 +71,7 @@ public class UnitActionSystem : MonoBehaviour
                 return;
             }
 
-            if (!selectedUnit.TrySpendActionPointsToTakeAction(selectedAction))
+            if (!selectedUnit.TryTakeAction(selectedAction))
             {
                 return;
             }
@@ -81,7 +82,6 @@ public class UnitActionSystem : MonoBehaviour
             OnActionStarted?.Invoke(this, EventArgs.Empty);
         }
     }
-
 
     private void SetBusy()
     {

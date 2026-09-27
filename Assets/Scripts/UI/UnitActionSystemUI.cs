@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.AppUI.UI;
 using UnityEngine;
 
 public class UnitActionSystemUI : MonoBehaviour
@@ -31,12 +30,13 @@ public class UnitActionSystemUI : MonoBehaviour
             UnitActionSystem_OnActionStarted;
 
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
-        Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
+        Unit.OnAnyResourceChanged += Unit_OnAnyActionPointsChanged;
 
         UpdateActionPoints();
         CreateUnitActionButtons();
         UpdateSelectedVisual();
     }
+
 
     private void CreateUnitActionButtons()
     {
@@ -61,18 +61,6 @@ public class UnitActionSystemUI : MonoBehaviour
         }
     }
 
-    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e)
-    {
-        CreateUnitActionButtons();
-        UpdateSelectedVisual();
-        UpdateActionPoints();
-    }
-
-    private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
-    {
-        UpdateSelectedVisual();
-    }
-
     private void UpdateSelectedVisual()
     {
         foreach (ActionButtonUI actionButtonUI in actionButtonUIList)
@@ -85,7 +73,34 @@ public class UnitActionSystemUI : MonoBehaviour
     {
         Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
 
-        actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
+        string text = "";
+        foreach (ResourceTypeSO type in selectedUnit.GetResourceTypes())
+        {
+            text += type.resourceName + ": " + selectedUnit.GetResourceAmount(type) + " | ";
+        }
+
+        TeamResourceSystem teamResourceSystem = TeamResourceSystem.Instance;
+        List<ResourceTypeSO> teamResourceTypeSO = teamResourceSystem.GetTeamResourceTypes();
+
+        foreach (ResourceTypeSO type in teamResourceTypeSO)
+        {
+            text += type.resourceName + ": " + teamResourceSystem.ResourcePool.GetAmount(type) + " | ";
+        }
+
+        actionPointsText.text = text;
+    }
+
+
+    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e)
+    {
+        CreateUnitActionButtons();
+        UpdateSelectedVisual();
+        UpdateActionPoints();
+    }
+
+    private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
+    {
+        UpdateSelectedVisual();
     }
 
     private void UnitActionSystem_OnActionStarted(object sender, EventArgs e)

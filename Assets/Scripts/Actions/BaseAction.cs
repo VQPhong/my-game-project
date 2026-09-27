@@ -8,6 +8,8 @@ public abstract class BaseAction : MonoBehaviour
     protected bool isActive;
     protected Action onActionComplete;
 
+    [SerializeField] private List<ActionCost> actionCosts = new List<ActionCost>();
+
 
     protected virtual void Awake()
     {
@@ -26,9 +28,9 @@ public abstract class BaseAction : MonoBehaviour
 
     public abstract List<GridPosition> GetValidActionGridPositionList();
 
-    public virtual int GetActionPointsCost()
+    public virtual ActionCost[] GetActionCosts()
     {
-        return 1;
+        return actionCosts.ToArray();
     }
 
 }

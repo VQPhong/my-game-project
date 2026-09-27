@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    private const int ACTION_POINTS_MAX = 2;
+    public static event EventHandler OnAnyResourceChanged;
 
 
-    public static event EventHandler OnAnyActionPointsChanged;
+    [SerializeField] private List<ResourceTypeSO> unitResourceTypes;
 
 
+    private ResourcePool resourcePool = new ResourcePool();
     private GridPosition gridPosition;
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
-    private int actionPoints = ACTION_POINTS_MAX;
 
 
     private void Awake()
@@ -23,6 +23,8 @@ public class Unit : MonoBehaviour
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction> ();
+
+        resourcePool.Initialize(unitResourceTypes);
     }
 
     private void Start()
@@ -46,6 +48,7 @@ public class Unit : MonoBehaviour
         }
     }
 
+
     public MoveAction GetMoveAction()
     {
         return moveAction;
@@ -66,48 +69,43 @@ public class Unit : MonoBehaviour
         return baseActionArray;
     }
 
-    public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
+    private ResourcePool GetPoolForCost(ActionCost cost)
     {
-        if (CanSpendActionPointsToTakeAction(baseAction))
-        {
-            SpendActionPoints(baseAction.GetActionPointsCost());
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return cost.resourceType.isShared ? TeamResourceSystem.Instance.ResourcePool : resourcePool;
     }
 
-    public bool CanSpendActionPointsToTakeAction(BaseAction baseAction)
+    public bool CanAfford(BaseAction action)
     {
-        if (actionPoints >= baseAction.GetActionPointsCost())
+        foreach (ActionCost cost in action.GetActionCosts())
         {
-            return true;
+            if (GetPoolForCost(cost).GetAmount(cost.resourceType) < cost.amount) return false;
         }
-        else
+        return true;
+    }
+
+    public bool TryTakeAction(BaseAction action)
+    {
+        if (!CanAfford(action)) return false;
+
+        foreach (ActionCost cost in action.GetActionCosts())
         {
-            return false;
+            GetPoolForCost(cost).Spend(cost.resourceType, cost.amount);
         }
+
+        OnAnyResourceChanged?.Invoke(this, EventArgs.Empty);
+        return true;
     }
 
-    private void SpendActionPoints(int amount)
-    {
-        actionPoints -= amount;
+    public int GetResourceAmount(ResourceTypeSO type) => resourcePool.GetAmount(type);
 
-        OnAnyActionPointsChanged?.Invoke(this, EventArgs.Empty);
-    }
+    public List<ResourceTypeSO> GetResourceTypes() => unitResourceTypes;
 
-    public int GetActionPoints()
-    {
-        return actionPoints;
-    }
 
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
-        actionPoints = ACTION_POINTS_MAX;
+        resourcePool.ApplyRegen();
 
-        OnAnyActionPointsChanged?.Invoke(this, EventArgs.Empty);
+        OnAnyResourceChanged?.Invoke(this, EventArgs.Empty);
     }
 
 
