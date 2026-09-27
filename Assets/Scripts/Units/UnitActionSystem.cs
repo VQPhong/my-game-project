@@ -41,11 +41,24 @@ namespace Assets.Scripts.Units
 
         private void Start()
         {
-            SetSelectedUnit(selectedUnit);
+            if (IsUnitSelectable(selectedUnit))
+            {
+                SetSelectedUnit(selectedUnit);
+            }
+            else
+            {
+                selectedUnit = null;
+                Unit.OnAnyUnitSpawned += Unit_OnAnyUnitSpawned;
+            }
         }
 
         private void Update()
         {
+            if (selectedAction == null)
+            {
+                return;
+            }
+
             if (isBusy)
             {
                 return;
@@ -151,6 +164,21 @@ namespace Assets.Scripts.Units
         {
             return selectedAction;
         }
+
+        public bool IsUnitSelectable(Unit unit) => unit != null && unit.gameObject.activeInHierarchy;
+
+
+        private void Unit_OnAnyUnitSpawned(object sender, EventArgs e)
+        {
+            if (IsUnitSelectable(selectedUnit))
+            {
+                return;
+            }
+
+            SetSelectedUnit(sender as Unit);
+            Unit.OnAnyUnitSpawned -= Unit_OnAnyUnitSpawned;
+        }
+
 
     }
 }

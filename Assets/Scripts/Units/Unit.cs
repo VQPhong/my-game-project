@@ -12,6 +12,7 @@ namespace Assets.Scripts.Units
     public class Unit : MonoBehaviour
     {
         public static event EventHandler OnAnyResourceChanged;
+        public static event EventHandler OnAnyUnitSpawned;
 
 
         [SerializeField] private List<ResourceTypeSO> unitResourceTypes;
@@ -41,6 +42,8 @@ namespace Assets.Scripts.Units
             LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+
+            OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
         }
 
         private void Update()
