@@ -1,39 +1,42 @@
 using System;
 using UnityEngine;
 
-public class TurnSystem : MonoBehaviour
+namespace Assets.Scripts
 {
-    public static TurnSystem Instance { get; private set; }
-
-
-    public event EventHandler OnTurnChanged;
-
-
-    private int turnNumber = 1;
-
-
-    private void Awake()
+    public class TurnSystem : MonoBehaviour
     {
-        if (Instance != null)
+        public static TurnSystem Instance { get; private set; }
+
+
+        public event EventHandler OnTurnChanged;
+
+
+        private int turnNumber = 1;
+
+
+        private void Awake()
         {
-            Debug.LogError("There's more than one TurnSystem! " + transform + " - " + Instance);
-            Destroy(gameObject);
-            return;
+            if (Instance != null)
+            {
+                Debug.LogError("There's more than one TurnSystem! " + transform + " - " + Instance);
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
         }
-        Instance = this;
+
+
+        public void NextTurn()
+        {
+            turnNumber++;
+
+            OnTurnChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public int GetTurnNumber()
+        {
+            return turnNumber;
+        }
+
     }
-
-
-    public void NextTurn()
-    {
-        turnNumber++;
-
-        OnTurnChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    public int GetTurnNumber()
-    {
-        return turnNumber;
-    }
-
 }

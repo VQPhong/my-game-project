@@ -1,22 +1,26 @@
+using Assets.Scripts.Units;
 using UnityEngine;
 
-public class Testing : MonoBehaviour
+namespace Assets.Scripts
 {
-    [SerializeField] private Unit unit;
-
-
-    private void Start()
+    public class Testing : MonoBehaviour
     {
+        [SerializeField] private Unit unit;
+
+
+        private void Start()
+        {
+
+        }
+
+        private void Update()
+        {
+            //if (Input.GetKeyDown(KeyCode.T))
+            //{
+
+            //}
+
+        }
 
     }
-
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.T))
-        //{
-
-        //}
-
-    }
-
 }

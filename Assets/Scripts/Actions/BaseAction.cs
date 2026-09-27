@@ -1,34 +1,42 @@
+using Assets.Scripts.ActionEconomies;
+using Assets.Scripts.Grids;
+using Assets.Scripts.Units;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BaseAction : MonoBehaviour
+namespace Assets.Scripts.Actions
 {
-    protected Unit unit;
-    protected bool isActive;
-    protected Action onActionComplete;
-
-
-    protected virtual void Awake()
+    public abstract class BaseAction : MonoBehaviour
     {
-        unit = GetComponent<Unit>();
+        protected Unit unit;
+        protected bool isActive;
+        protected Action onActionComplete;
+
+        [SerializeField] private List<ActionCost> actionCosts = new List<ActionCost>();
+
+
+        protected virtual void Awake()
+        {
+            unit = GetComponent<Unit>();
+        }
+
+        public abstract string GetActionName();
+
+        public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+
+        public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
+        {
+            List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
+            return validGridPositionList.Contains(gridPosition);
+        }
+
+        public abstract List<GridPosition> GetValidActionGridPositionList();
+
+        public virtual ActionCost[] GetActionCosts()
+        {
+            return actionCosts.ToArray();
+        }
+
     }
-
-    public abstract string GetActionName();
-
-    public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
-
-    public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
-    {
-        List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
-        return validGridPositionList.Contains(gridPosition);
-    }
-
-    public abstract List<GridPosition> GetValidActionGridPositionList();
-
-    public virtual int GetActionPointsCost()
-    {
-        return 1;
-    }
-
 }
