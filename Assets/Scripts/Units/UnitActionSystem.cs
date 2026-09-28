@@ -143,7 +143,8 @@ namespace Assets.Scripts.Units
         {
             selectedUnit = unit;
 
-            SetSelectedAction(unit.GetMoveAction());
+            BaseAction[] actions = unit.GetBaseActionArray();
+            SetSelectedAction(actions.Length > 0 ? actions[0] : null);
 
             OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
         }

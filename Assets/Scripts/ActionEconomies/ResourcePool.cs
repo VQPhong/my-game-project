@@ -6,12 +6,32 @@ namespace Assets.Scripts.ActionEconomies
     public class ResourcePool
     {
         private Dictionary<ResourceTypeSO, int> pool = new Dictionary<ResourceTypeSO, int>();
+        private Dictionary<ResourceTypeSO, int> maxAmounts = new Dictionary<ResourceTypeSO, int>();
 
+
+        /// <summary>
+        /// For default
+        /// </summary>
+        /// <param name="types"></param>
         public void Initialize(List<ResourceTypeSO> types)
         {
             foreach (ResourceTypeSO type in types)
             {
                 pool[type] = type.maxAmount;
+                maxAmounts[type] = type.maxAmount;
+            }
+        }
+
+        /// <summary>
+        /// For dynamic allotment
+        /// </summary>
+        /// <param name="allotments"></param>
+        public void Initialize(List<ResourceAllotment> allotments)
+        {
+            foreach (ResourceAllotment allotment in allotments)
+            {
+                pool[allotment.resourceType] = allotment.maxAmount;
+                maxAmounts[allotment.resourceType] = allotment.maxAmount;
             }
         }
 
@@ -34,13 +54,14 @@ namespace Assets.Scripts.ActionEconomies
 
             foreach (ResourceTypeSO type in keys)
             {
+                int maxAmount = maxAmounts[type];
                 switch (type.regenMode)
                 {
                     case RegenMode.FullResetEachTurn:
-                        pool[type] = type.maxAmount;
+                        pool[type] = maxAmount;
                         break;
                     case RegenMode.IncrementEachTurn:
-                        pool[type] = Mathf.Min(type.maxAmount, pool[type] + type.regenAmount);
+                        pool[type] = Mathf.Min(maxAmount, pool[type] + type.regenAmount);
                         break;
                     default:
                         break;

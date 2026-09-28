@@ -1,9 +1,8 @@
-using Assets.Scripts;
 using Assets.Scripts.ActionEconomies;
 using Assets.Scripts.Actions;
 using Assets.Scripts.Grids;
+using Assets.Scripts.Squads;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,9 +14,10 @@ namespace Assets.Scripts.Units
         public static event EventHandler OnAnyUnitSpawned;
 
 
-        [SerializeField] private List<ResourceTypeSO> unitResourceTypes;
+        [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
 
 
+        private List<ResourceTypeSO> resourceTypes;
         private ResourcePool resourcePool = new ResourcePool();
         private GridPosition gridPosition;
         private MoveAction moveAction;
@@ -27,18 +27,19 @@ namespace Assets.Scripts.Units
 
         private void Awake()
         {
-            moveAction = GetComponent<MoveAction>();
-            spinAction = GetComponent<SpinAction>();
-            baseActionArray = GetComponents<BaseAction> ();
+            RefreshActionReferences();
 
-            resourcePool.Initialize(unitResourceTypes);
+            InitializeResources(unitResourceAllotments);
         }
 
         private void Start()
         {
             gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             transform.position = LevelGrid.Instance.GetWorldPosition(gridPosition);
-            moveAction.ResetTargetPosition();
+            if (moveAction != null)
+            {
+                moveAction.ResetTargetPosition();
+            }
             LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
@@ -58,14 +59,18 @@ namespace Assets.Scripts.Units
         }
 
 
-        public MoveAction GetMoveAction()
+        public void Configure(UnitConfigSO config)
         {
-            return moveAction;
-        }
+            InitializeResources(config.resourceAllotments);
 
-        public SpinAction GetSpinAction()
-        {
-            return spinAction;
+            foreach (ActionConfig actionConfig in config.actions)
+            {
+                BaseAction action = ActionFactory.AddAction(gameObject, actionConfig.actionType);
+                action.SetActionCosts(actionConfig.actionCosts);
+                action.SetOrder(actionConfig.order);
+            }
+
+            RefreshActionReferences();
         }
 
         public GridPosition GetGridPosition()
@@ -107,7 +112,22 @@ namespace Assets.Scripts.Units
 
         public int GetResourceAmount(ResourceTypeSO type) => resourcePool.GetAmount(type);
 
-        public List<ResourceTypeSO> GetResourceTypes() => unitResourceTypes;
+        public List<ResourceTypeSO> GetResourceTypes() => resourceTypes;
+
+        private void InitializeResources(List<ResourceAllotment> allotments)
+        {
+            resourceTypes = allotments.ConvertAll(a => a.resourceType);
+            resourcePool.Initialize(allotments);
+        }
+
+        private void RefreshActionReferences()
+        {
+            baseActionArray = GetComponents<BaseAction>();
+            Array.Sort(baseActionArray, (a, b) => a.GetOrder().CompareTo(b.GetOrder()));
+
+            moveAction = GetComponent<MoveAction>();
+            spinAction = GetComponent<SpinAction>();
+        }
 
 
         private void TurnSystem_OnTurnChanged(object sender, EventArgs e)

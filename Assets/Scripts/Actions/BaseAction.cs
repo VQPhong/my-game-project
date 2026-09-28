@@ -14,6 +14,7 @@ namespace Assets.Scripts.Actions
         protected Action onActionComplete;
 
         [SerializeField] private List<ActionCost> actionCosts = new List<ActionCost>();
+        [SerializeField] private int order = 100;
 
 
         protected virtual void Awake()
@@ -38,5 +39,13 @@ namespace Assets.Scripts.Actions
             return actionCosts.ToArray();
         }
 
+        public void SetActionCosts(List<ActionCost> costs)
+        {
+            actionCosts = costs;
+        }
+
+        public int GetOrder() => order;
+
+        public void SetOrder(int newOrder) => order = newOrder;
     }
 }

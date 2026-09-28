@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Assets.Scripts.ActionEconomies;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Squads
@@ -15,5 +15,8 @@ namespace Assets.Scripts.Squads
 
         [Tooltip("Resource caps for THIS config - overrides ResourceTypeSO.maxAmount when spawned")]
         public List<ResourceAllotment> resourceAllotments;
+
+        [Tooltip("Overrides ResourceTypeSO.maxAmount when spawned")]
+        public List<ActionConfig> actions;
     }
 }
