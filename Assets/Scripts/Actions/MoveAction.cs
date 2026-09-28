@@ -18,6 +18,11 @@ namespace Assets.Scripts.Actions
         {
             base.Awake();
             targetPosition = transform.position;
+
+            if (unitAnimator == null)
+            {
+                unitAnimator = GetComponentInChildren<Animator>();
+            }
         }
 
         private void Update()
@@ -57,7 +62,7 @@ namespace Assets.Scripts.Actions
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
             this.onActionComplete = onActionComplete;
-            this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+            targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
             isActive = true;
         }
 

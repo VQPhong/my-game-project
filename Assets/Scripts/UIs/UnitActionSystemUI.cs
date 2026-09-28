@@ -1,4 +1,3 @@
-using Assets.Scripts;
 using Assets.Scripts.ActionEconomies;
 using Assets.Scripts.Actions;
 using Assets.Scripts.Units;
@@ -38,9 +37,9 @@ namespace Assets.Scripts.UIs
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
             Unit.OnAnyResourceChanged += Unit_OnAnyActionPointsChanged;
 
-            UpdateActionPoints();
             CreateUnitActionButtons();
             UpdateSelectedVisual();
+            UpdateActionPoints();
         }
 
 
@@ -54,6 +53,11 @@ namespace Assets.Scripts.UIs
             actionButtonUIList.Clear();
 
             Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
+
+            if (selectedUnit == null)
+            {
+                return;
+            }
 
             BaseAction[] actions = selectedUnit.GetBaseActionArray();
 
@@ -77,12 +81,16 @@ namespace Assets.Scripts.UIs
 
         private void UpdateActionPoints()
         {
+            string text = "";
+
             Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
 
-            string text = "";
-            foreach (ResourceTypeSO type in selectedUnit.GetResourceTypes())
+            if (UnitActionSystem.Instance.IsUnitSelectable(selectedUnit))
             {
-                text += type.resourceName + ": " + selectedUnit.GetResourceAmount(type) + " | ";
+                foreach (ResourceTypeSO type in selectedUnit.GetResourceTypes())
+                {
+                    text += type.resourceName + ": " + selectedUnit.GetResourceAmount(type) + " | ";
+                }
             }
 
             TeamResourceSystem teamResourceSystem = TeamResourceSystem.Instance;

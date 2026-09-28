@@ -81,8 +81,12 @@ namespace Assets.Scripts.Grids
 
             BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
 
-            ShowGridPositionList(
-                selectedAction.GetValidActionGridPositionList());
+            if (selectedAction == null)
+            {
+                return;
+            }
+
+            ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
         }
 
     }
