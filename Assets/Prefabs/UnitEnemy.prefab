@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 6807881682072705677}
   - component: {fileID: -1524671805719996008}
   - component: {fileID: -2684717974804068696}
+  - component: {fileID: 6581787149786732949}
   m_Layer: 7
   m_Name: UnitEnemy
   m_TagString: Untagged
@@ -223,6 +224,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Units.UnitAnimator
   animator: {fileID: 5696616434221914444}
+--- !u!114 &6581787149786732949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7853695074761349140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28d833defc30c74b8778cf056ae5e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Units.HealthSystem
+  health: 100
 --- !u!1001 &4189167475701705974
 PrefabInstance:
   m_ObjectHideFlags: 0

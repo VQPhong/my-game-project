@@ -41,6 +41,10 @@ namespace Assets.Scripts.Units
             UpdateVisual();
         }
 
+        private void OnDestroy()
+        {
+            UnitActionSystem.Instance.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedUnitChanged;
+        }
 
     }
 }

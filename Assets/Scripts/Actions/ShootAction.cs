@@ -83,7 +83,7 @@ namespace Assets.Scripts.Actions
         private void Shoot()
         {
             OnShoot?.Invoke(this, EventArgs.Empty);
-            targetUnit.Damage();
+            targetUnit.Damage(101);
         }
 
         public override string GetActionName()

@@ -21,6 +21,7 @@ namespace Assets.Scripts.Units
         private List<ResourceTypeSO> resourceTypes;
         private ResourcePool resourcePool = new ResourcePool();
         private GridPosition gridPosition;
+        private HealthSystem healthSystem;
         private MoveAction moveAction;
         private SpinAction spinAction;
         private BaseAction[] baseActionArray;
@@ -28,6 +29,8 @@ namespace Assets.Scripts.Units
 
         private void Awake()
         {
+            healthSystem = GetComponent<HealthSystem>();
+
             RefreshActionReferences();
 
             InitializeResources(unitResourceAllotments);
@@ -46,6 +49,8 @@ namespace Assets.Scripts.Units
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
 
             OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
+
+            healthSystem.OnDead += HealthSystem_OnDead;
         }
 
         private void Update()
@@ -152,10 +157,18 @@ namespace Assets.Scripts.Units
             return transform.position;
         }
 
-        public void Damage()
+        public void Damage(int damageAmount)
         {
-            Debug.Log(transform + " damaged!");
+            healthSystem.Damage(damageAmount);
         }
+
+        private void HealthSystem_OnDead(object sender, EventArgs e)
+        {
+            LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+
+            Destroy(gameObject);
+        }
+
 
 
     }
