@@ -12,6 +12,7 @@ namespace Assets.Scripts
 
 
         private int turnNumber = 1;
+        private bool isPlayerTurn = true;
 
 
         private void Awake()
@@ -29,6 +30,7 @@ namespace Assets.Scripts
         public void NextTurn()
         {
             turnNumber++;
+            isPlayerTurn = !isPlayerTurn;
 
             OnTurnChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -36,6 +38,11 @@ namespace Assets.Scripts
         public int GetTurnNumber()
         {
             return turnNumber;
+        }
+
+        public bool IsPlayerTurn()
+        {
+            return isPlayerTurn;
         }
 
     }

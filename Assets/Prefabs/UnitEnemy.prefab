@@ -117,9 +117,9 @@ GameObject:
   - component: {fileID: 4506042411312053571}
   - component: {fileID: 6807881682072705677}
   - component: {fileID: -1524671805719996008}
-  - component: {fileID: 6627062708668001723}
+  - component: {fileID: -2684717974804068696}
   m_Layer: 7
-  m_Name: Unit
+  m_Name: UnitEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,7 +210,7 @@ MonoBehaviour:
     amount: 1
   order: 100
   maxMoveDistance: 4
---- !u!114 &6627062708668001723
+--- !u!114 &-2684717974804068696
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -597,6 +597,10 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 137043315913542574, guid: 8dbb22b9d53a7664b8619d4c6888d92f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c70e075a2144ba04784d74b7b2889fd3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

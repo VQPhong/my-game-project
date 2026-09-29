@@ -64,6 +64,11 @@ namespace Assets.Scripts.Units
                 return;
             }
 
+            if (!TurnSystem.Instance.IsPlayerTurn())
+            {
+                return;
+            }
+
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 return;
@@ -127,6 +132,10 @@ namespace Assets.Scripts.Units
                         if (unit == selectedUnit)
                         {
                             // Unit is already selected
+                            return false;
+                        }
+                        if (unit.IsEnemy())
+                        {
                             return false;
                         }
 

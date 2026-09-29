@@ -8,9 +8,12 @@ namespace Assets.Scripts.Actions
 {
     public class MoveAction : BaseAction
     {
-
-        [SerializeField] private Animator unitAnimator;
         [SerializeField] private int maxMoveDistance = 4;
+
+
+        public event EventHandler OnStartMoving;
+        public event EventHandler OnStopMoving;
+
 
         private Vector3 targetPosition;
 
@@ -19,10 +22,10 @@ namespace Assets.Scripts.Actions
             base.Awake();
             targetPosition = transform.position;
 
-            if (unitAnimator == null)
-            {
-                unitAnimator = GetComponentInChildren<Animator>();
-            }
+            //if (unitAnimator == null)
+            //{
+            //    unitAnimator = GetComponentInChildren<Animator>();
+            //}
         }
 
         private void Update()
@@ -39,14 +42,12 @@ namespace Assets.Scripts.Actions
             {
                 float moveSpeed = 4f;
                 transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-                unitAnimator.SetBool("IsWalking", true);
             }
             else
             {
-                unitAnimator.SetBool("IsWalking", false);
-                isActive = false;
-                onActionComplete();
+                OnStopMoving?.Invoke(this, EventArgs.Empty);
+
+                ActionComplete();
             }
 
             float rotateSpeed = 10f;
@@ -61,9 +62,9 @@ namespace Assets.Scripts.Actions
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            this.onActionComplete = onActionComplete;
+            ActionStart(onActionComplete);
             targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-            isActive = true;
+            OnStartMoving?.Invoke(this, EventArgs.Empty);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList()

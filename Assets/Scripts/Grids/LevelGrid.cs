@@ -75,6 +75,13 @@ namespace Assets.Scripts.Grids
 
         public int GetHeight() => gridSystem.GetHeight();
 
+        public Unit GetUnitAtGridPosition(GridPosition gridPosition)
+        {
+            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+            return gridObject.GetUnit();
+        }
+
+
 
     }
 }

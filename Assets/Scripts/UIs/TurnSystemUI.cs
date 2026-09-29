@@ -12,6 +12,8 @@ namespace Assets.Scripts.UIs
 
         [SerializeField] private Button endTurnBtn;
         [SerializeField] private TextMeshProUGUI turnNumberText;
+        [SerializeField] private GameObject enemyTurnVisualGameObject;
+
 
         private void Start()
         {
@@ -23,6 +25,9 @@ namespace Assets.Scripts.UIs
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
 
             UpdateTurnText();
+            UpdateEnemyTurnVisual();
+            UpdateEndTurnButtonVisibility();
+
         }
 
 
@@ -35,7 +40,21 @@ namespace Assets.Scripts.UIs
         private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
         {
             UpdateTurnText();
+            UpdateEnemyTurnVisual();
+            UpdateEndTurnButtonVisibility();
+
         }
+
+        private void UpdateEnemyTurnVisual()
+        {
+            enemyTurnVisualGameObject.SetActive(!TurnSystem.Instance.IsPlayerTurn());
+        }
+
+        private void UpdateEndTurnButtonVisibility()
+        {
+            endTurnBtn.gameObject.SetActive(TurnSystem.Instance.IsPlayerTurn());
+        }
+
 
     }
 }

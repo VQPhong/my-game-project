@@ -44,6 +44,18 @@ namespace Assets.Scripts.Actions
             actionCosts = costs;
         }
 
+        protected void ActionStart(Action onActionComplete)
+        {
+            isActive = true;
+            this.onActionComplete = onActionComplete;
+        }
+
+        protected void ActionComplete()
+        {
+            isActive = false;
+            onActionComplete();
+        }
+
         public int GetOrder() => order;
 
         public void SetOrder(int newOrder) => order = newOrder;

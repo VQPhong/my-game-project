@@ -15,6 +15,7 @@ namespace Assets.Scripts.Units
 
 
         [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
+        [SerializeField] private bool isEnemy;
 
 
         private List<ResourceTypeSO> resourceTypes;
@@ -129,12 +130,31 @@ namespace Assets.Scripts.Units
             spinAction = GetComponent<SpinAction>();
         }
 
+        public bool IsEnemy()
+        {
+            return isEnemy;
+        }
+
 
         private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
         {
-            resourcePool.ApplyRegen();
+            if ((IsEnemy() && !TurnSystem.Instance.IsPlayerTurn()) ||
+            (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+            {
+                resourcePool.ApplyRegen();
 
-            OnAnyResourceChanged?.Invoke(this, EventArgs.Empty);
+                OnAnyResourceChanged?.Invoke(this, EventArgs.Empty);
+            }                
+        }
+
+        public Vector3 GetWorldPosition()
+        {
+            return transform.position;
+        }
+
+        public void Damage()
+        {
+            Debug.Log(transform + " damaged!");
         }
 
 
