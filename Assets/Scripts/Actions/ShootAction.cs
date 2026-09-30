@@ -8,7 +8,14 @@ namespace Assets.Scripts.Actions
 {
     public class ShootAction : BaseAction
     {
-        public event EventHandler OnShoot;
+        public event EventHandler<OnShootEventArgs> OnShoot;
+
+
+        public class OnShootEventArgs : EventArgs
+        {
+            public Unit targetUnit;
+            public Unit shootingUnit;
+        }
 
 
         private enum State
@@ -17,6 +24,7 @@ namespace Assets.Scripts.Actions
             Shooting,
             Cooloff,
         }
+
 
         private State state;
         private int maxShootDistance = 7;
@@ -82,7 +90,11 @@ namespace Assets.Scripts.Actions
 
         private void Shoot()
         {
-            OnShoot?.Invoke(this, EventArgs.Empty);
+            OnShoot?.Invoke(this, new OnShootEventArgs
+            {
+                targetUnit = targetUnit,
+                shootingUnit = unit
+            });
             targetUnit.Damage(101);
         }
 
