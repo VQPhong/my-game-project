@@ -37,10 +37,7 @@ namespace Assets.Scripts.Units
                 return;
             }
             Instance = this;
-        }
 
-        private void Start()
-        {
             if (IsUnitSelectable(selectedUnit))
             {
                 SetSelectedUnit(selectedUnit);
@@ -54,11 +51,6 @@ namespace Assets.Scripts.Units
 
         private void Update()
         {
-            if (selectedAction == null)
-            {
-                return;
-            }
-
             if (isBusy)
             {
                 return;
@@ -75,6 +67,11 @@ namespace Assets.Scripts.Units
             }
 
             if (TryHandleUnitSelection())
+            {
+                return;
+            }
+
+            if (selectedAction == null)
             {
                 return;
             }
@@ -175,7 +172,7 @@ namespace Assets.Scripts.Units
             return selectedAction;
         }
 
-        public bool IsUnitSelectable(Unit unit) => unit != null && unit.gameObject.activeInHierarchy;
+        public bool IsUnitSelectable(Unit unit) => unit != null && unit.gameObject.activeInHierarchy && !unit.IsEnemy();
 
 
         private void Unit_OnAnyUnitSpawned(object sender, EventArgs e)
@@ -185,7 +182,14 @@ namespace Assets.Scripts.Units
                 return;
             }
 
-            SetSelectedUnit(sender as Unit);
+            Unit spawnedUnit = sender as Unit;
+
+            if (!IsUnitSelectable(spawnedUnit))
+            {
+                return;
+            }
+
+            SetSelectedUnit(spawnedUnit);
             Unit.OnAnyUnitSpawned -= Unit_OnAnyUnitSpawned;
         }
 

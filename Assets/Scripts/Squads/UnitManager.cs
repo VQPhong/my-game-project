@@ -22,10 +22,6 @@ namespace Assets.Scripts.Squads
             Instance = this;
 
             unitList = new List<Unit>();
-        }
-
-        private void Start()
-        {
             Unit.OnAnyUnitSpawned += Unit_OnAnyUnitSpawned;
         }
 
