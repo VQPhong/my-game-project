@@ -16,6 +16,7 @@ namespace Assets.Scripts.Units
 
         [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
         [SerializeField] private bool isEnemy;
+        [SerializeField] private UnitRagdoll unitRagdoll;
 
 
         private List<ResourceTypeSO> resourceTypes;
@@ -166,7 +167,7 @@ namespace Assets.Scripts.Units
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
 
-            Destroy(gameObject);
+            unitRagdoll.Activate();
         }
 
 

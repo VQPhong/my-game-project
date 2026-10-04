@@ -4,31 +4,41 @@ namespace Assets.Scripts.Units
 {
     public class UnitRagdoll : MonoBehaviour
     {
-        [SerializeField] private Transform ragdollRootBone;
+        private Animator animator;
+        private Rigidbody[] ragdollRigidbodies;
 
-        public void Setup(Transform originalRootBone)
-        {
-            MatchAllChildTransforms(originalRootBone, ragdollRootBone);
+        private void Awake() {
+            animator = GetComponent<Animator>();
+            ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
 
-            ApplyExplosionToRagdoll(ragdollRootBone, 300f, transform.position, 10f);
+            SetRagdollActive(false);
         }
 
-        private void MatchAllChildTransforms(Transform root, Transform clone)
+        public void Activate()
         {
-            foreach (Transform child in root)
+            transform.SetParent(null);
+            SetRagdollActive(true);
+            ApplyExplosionToRagdoll(transform, 0f, transform.position, 10f);
+        }
+
+        private void SetRagdollActive(bool active)
+        {
+            foreach (Rigidbody rigidBody in ragdollRigidbodies)
             {
-                Transform cloneChild = clone.Find(child.name);
-                if (cloneChild != null)
-                {
-                    cloneChild.position = child.position;
-                    cloneChild.rotation = child.rotation;
-
-                    MatchAllChildTransforms(child, cloneChild);
-                }
+                rigidBody.isKinematic = !active;
             }
+
+            animator.enabled = !active;
         }
 
-        private void ApplyExplosionToRagdoll(Transform root, float explosionForce, Vector3 explosionPosition, float explosionRange)
+        [ContextMenu("Test Ragdoll")]
+        private void TestRagdoll() { SetRagdollActive(true); }
+
+        private void ApplyExplosionToRagdoll(
+            Transform root,
+            float explosionForce,
+            Vector3 explosionPosition,
+            float explosionRange)
         {
             foreach (Transform child in root)
             {
