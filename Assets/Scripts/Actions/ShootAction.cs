@@ -11,6 +11,13 @@ namespace Assets.Scripts.Actions
         public event EventHandler<OnShootEventArgs> OnShoot;
 
 
+        [SerializeField] private int damageAmount = 101;
+
+        [SerializeField] private float impactForce = 0;
+
+        [SerializeField] private Transform shootPointTransform;
+
+
         public class OnShootEventArgs : EventArgs
         {
             public Unit targetUnit;
@@ -90,12 +97,19 @@ namespace Assets.Scripts.Actions
 
         private void Shoot()
         {
+            DamageInfo damageInfo = new DamageInfo
+            {
+                amount = damageAmount,
+                impactForce = impactForce,
+                sourcePosition = shootPointTransform.position
+            };
+
             OnShoot?.Invoke(this, new OnShootEventArgs
             {
                 targetUnit = targetUnit,
                 shootingUnit = unit
             });
-            targetUnit.Damage(101);
+            targetUnit.Damage(damageInfo);
         }
 
         public override string GetActionName()

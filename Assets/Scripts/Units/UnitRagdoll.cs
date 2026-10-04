@@ -14,7 +14,7 @@ namespace Assets.Scripts.Units
             SetRagdollActive(false);
         }
 
-        public void Activate()
+        public void Activate(Vector3 sourcePosition, float impactForce)
         {
             transform.SetParent(null);
             SetRagdollActive(true);

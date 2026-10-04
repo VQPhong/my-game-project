@@ -26,6 +26,7 @@ namespace Assets.Scripts.Units
         private MoveAction moveAction;
         private SpinAction spinAction;
         private BaseAction[] baseActionArray;
+        private DamageInfo lastDamageInfo;
 
 
         private void Awake()
@@ -158,16 +159,19 @@ namespace Assets.Scripts.Units
             return transform.position;
         }
 
-        public void Damage(int damageAmount)
+        public void Damage(DamageInfo damageInfo)
         {
-            healthSystem.Damage(damageAmount);
+            lastDamageInfo = damageInfo;
+            healthSystem.Damage(damageInfo.amount);
         }
 
         private void HealthSystem_OnDead(object sender, EventArgs e)
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
 
-            unitRagdoll.Activate();
+            unitRagdoll.Activate(lastDamageInfo.sourcePosition, lastDamageInfo.impactForce);
+
+            Destroy(gameObject);
         }
 
 

@@ -1390,6 +1390,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1305586361284810639, guid: ad0580004a3cc2241b6a544f4afc7249, type: 3}
+      propertyPath: isEnemy
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4532490201914689115, guid: ad0580004a3cc2241b6a544f4afc7249, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.209537
@@ -1708,6 +1712,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Actions.ShootAction
   actionCosts: []
   order: 100
+  damageAmount: 101
+  impactForce: 3
+  shootPointTransform: {fileID: 2080738463}
 --- !u!1 &1002484949
 GameObject:
   m_ObjectHideFlags: 0
@@ -2636,6 +2643,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1305586361284810639, guid: ad0580004a3cc2241b6a544f4afc7249, type: 3}
+      propertyPath: isEnemy
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4532490201914689115, guid: ad0580004a3cc2241b6a544f4afc7249, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.22860236
@@ -3208,6 +3219,11 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7841637069347503219, guid: e029829581a3ca7479d6569eddb4b114, type: 3}
   m_PrefabInstance: {fileID: 2010509411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2080738463 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5924750978904076404, guid: ad0580004a3cc2241b6a544f4afc7249, type: 3}
+  m_PrefabInstance: {fileID: 699867161}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2142590212
 GameObject:
