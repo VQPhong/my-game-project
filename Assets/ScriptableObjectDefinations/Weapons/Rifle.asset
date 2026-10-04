@@ -20,5 +20,5 @@ MonoBehaviour:
   range: 7
   baseAccuracy: 0.75
   impactType: 0
-  impactForce: 5
+  impactForce: 30
   projectilePrefab: {fileID: 158835901637278657, guid: 40b3ddd9d2d22ff41bda32c3a9df2751, type: 3}

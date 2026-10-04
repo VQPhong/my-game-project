@@ -53,11 +53,7 @@ namespace Assets.Scripts.Units
 
             BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
 
-            Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
-
-            targetUnitShootAtPosition.y = attackPointPosition.y;
-
-            bulletProjectile.Setup(targetUnitShootAtPosition);
+            bulletProjectile.Setup(e.impactPoint);
 
         }
 

@@ -177,7 +177,7 @@ namespace Assets.Scripts.Units
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
 
-            unitRagdoll.Activate(lastDamageInfo.sourcePosition, lastDamageInfo.impactForce);
+            unitRagdoll.Activate(lastDamageInfo);
 
             Destroy(gameObject);
         }

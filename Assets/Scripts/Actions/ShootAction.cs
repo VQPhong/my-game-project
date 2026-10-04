@@ -15,6 +15,7 @@ namespace Assets.Scripts.Actions
         {
             public Unit targetUnit;
             public Unit shootingUnit;
+            public Vector3 impactPoint;
         }
 
 
@@ -30,6 +31,7 @@ namespace Assets.Scripts.Actions
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
+        private const float impactPointSpread = 0.25f;
 
 
         private void Update()
@@ -92,17 +94,25 @@ namespace Assets.Scripts.Actions
             Weapon weapon = unit.GetWeapon();
             WeaponSO weaponData = weapon.GetData();
 
+            Vector3 attackPointPosition = weapon.GetAttackPoint().position;
+            Vector3 impactPoint = targetUnit.GetWorldPosition();
+            impactPoint.y = attackPointPosition.y;               // cùng quy tắc với đạn visual hiện tại
+            impactPoint += UnityEngine.Random.insideUnitSphere * impactPointSpread;
+
             DamageInfo damageInfo = new DamageInfo
             {
                 amount = weaponData.Damage.Roll(),
                 impactForce = weaponData.ImpactForce,
-                sourcePosition = weapon.GetAttackPoint().position
+                sourcePosition = weapon.GetAttackPoint().position,
+                impactType = weaponData.ImpactType,
+                impactPoint = impactPoint
             };
 
             OnShoot?.Invoke(this, new OnShootEventArgs
             {
                 targetUnit = targetUnit,
-                shootingUnit = unit
+                shootingUnit = unit,
+                impactPoint = impactPoint
             });
             targetUnit.Damage(damageInfo);
         }
