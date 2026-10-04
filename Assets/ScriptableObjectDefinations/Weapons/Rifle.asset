@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073ccc45e722385499054f51eb1844a7, type: 3}
+  m_Name: Rifle
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Weapons.WeaponSO
+  weaponName: Rifle
+  weaponPrefab: {fileID: 8939528384159807043, guid: fa49905fde0c3b54a8cb95f5e2ec1c29, type: 3}
+  damage:
+    min: 101
+    max: 101
+  range: 7
+  baseAccuracy: 0.75
+  impactType: 0
+  impactForce: 5
+  projectilePrefab: {fileID: 158835901637278657, guid: 40b3ddd9d2d22ff41bda32c3a9df2751, type: 3}

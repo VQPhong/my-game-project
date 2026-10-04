@@ -9,8 +9,6 @@ namespace Assets.Scripts.Units
     {
 
         [SerializeField] private Animator animator;
-        [SerializeField] private Transform bulletProjectilePrefab;
-        [SerializeField] private Transform shootPointTransform;
 
 
         private void Awake()
@@ -39,16 +37,25 @@ namespace Assets.Scripts.Units
 
         private void ShootAction_OnShoot(object sender, ShootAction.OnShootEventArgs e)
         {
+            Weapon weapon = e.shootingUnit.GetWeapon();
+            Transform projectilePrefab = weapon.GetData().ProjectilePrefab;
+            Vector3 attackPointPosition = weapon.GetAttackPoint().position;
+
             animator.SetTrigger("Shoot");
 
+            if (projectilePrefab == null)
+            {
+                return;
+            }
+
             Transform bulletProjectileTransform =
-                Instantiate(bulletProjectilePrefab, shootPointTransform.position, Quaternion.identity);
+                Instantiate(projectilePrefab, attackPointPosition, Quaternion.identity);
 
             BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
 
             Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
 
-            targetUnitShootAtPosition.y = shootPointTransform.position.y;
+            targetUnitShootAtPosition.y = attackPointPosition.y;
 
             bulletProjectile.Setup(targetUnitShootAtPosition);
 

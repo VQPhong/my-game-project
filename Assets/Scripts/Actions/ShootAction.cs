@@ -1,5 +1,6 @@
 using Assets.Scripts.Grids;
 using Assets.Scripts.Units;
+using Assets.Scripts.Weapons;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,14 +10,6 @@ namespace Assets.Scripts.Actions
     public class ShootAction : BaseAction
     {
         public event EventHandler<OnShootEventArgs> OnShoot;
-
-
-        [SerializeField] private int damageAmount = 101;
-
-        [SerializeField] private float impactForce = 0;
-
-        [SerializeField] private Transform shootPointTransform;
-
 
         public class OnShootEventArgs : EventArgs
         {
@@ -34,7 +27,6 @@ namespace Assets.Scripts.Actions
 
 
         private State state;
-        private int maxShootDistance = 7;
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
@@ -97,11 +89,14 @@ namespace Assets.Scripts.Actions
 
         private void Shoot()
         {
+            Weapon weapon = unit.GetWeapon();
+            WeaponSO weaponData = weapon.GetData();
+
             DamageInfo damageInfo = new DamageInfo
             {
-                amount = damageAmount,
-                impactForce = impactForce,
-                sourcePosition = shootPointTransform.position
+                amount = weaponData.Damage.Roll(),
+                impactForce = weaponData.ImpactForce,
+                sourcePosition = weapon.GetAttackPoint().position
             };
 
             OnShoot?.Invoke(this, new OnShootEventArgs
@@ -117,15 +112,29 @@ namespace Assets.Scripts.Actions
             return "Shoot";
         }
 
+        private WeaponSO GetWeaponData()
+        {
+            Weapon weapon = unit.GetWeapon();
+            return weapon != null ? weapon.GetData() : null;
+        }
+
         public override List<GridPosition> GetValidActionGridPositionList()
         {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
 
+            WeaponSO weaponData = GetWeaponData();
+
+            if (weaponData == null)
+            {
+                return validGridPositionList;
+            }
+
+
             GridPosition unitGridPosition = unit.GetGridPosition();
 
-            for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+            for (int x = -weaponData.Range; x <= weaponData.Range; x++)
             {
-                for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+                for (int z = -weaponData.Range; z <= weaponData.Range; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
                     GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -136,7 +145,7 @@ namespace Assets.Scripts.Actions
                     }
 
                     int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                    if (testDistance > maxShootDistance)
+                    if (testDistance > weaponData.Range)
                     {
                         continue;
                     }
