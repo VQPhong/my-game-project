@@ -1,5 +1,6 @@
 using Assets.Scripts.Grids;
 using Assets.Scripts.Units;
+using Assets.Scripts.Weapons;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,11 @@ namespace Assets.Scripts.Actions
     {
         public event EventHandler<OnShootEventArgs> OnShoot;
 
-
         public class OnShootEventArgs : EventArgs
         {
             public Unit targetUnit;
             public Unit shootingUnit;
+            public Vector3 impactPoint;
         }
 
 
@@ -27,10 +28,10 @@ namespace Assets.Scripts.Actions
 
 
         private State state;
-        private int maxShootDistance = 7;
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
+        private const float impactPointSpread = 0.25f;
 
 
         private void Update()
@@ -90,12 +91,30 @@ namespace Assets.Scripts.Actions
 
         private void Shoot()
         {
+            Weapon weapon = unit.GetWeapon();
+            WeaponSO weaponData = weapon.GetData();
+
+            Vector3 attackPointPosition = weapon.GetAttackPoint().position;
+            Vector3 impactPoint = targetUnit.GetWorldPosition();
+            impactPoint.y = attackPointPosition.y;               // cùng quy tắc với đạn visual hiện tại
+            impactPoint += UnityEngine.Random.insideUnitSphere * impactPointSpread;
+
+            DamageInfo damageInfo = new DamageInfo
+            {
+                amount = weaponData.Damage.Roll(),
+                impactForce = weaponData.ImpactForce,
+                sourcePosition = weapon.GetAttackPoint().position,
+                impactType = weaponData.ImpactType,
+                impactPoint = impactPoint
+            };
+
             OnShoot?.Invoke(this, new OnShootEventArgs
             {
                 targetUnit = targetUnit,
-                shootingUnit = unit
+                shootingUnit = unit,
+                impactPoint = impactPoint
             });
-            targetUnit.Damage(101);
+            targetUnit.Damage(damageInfo);
         }
 
         public override string GetActionName()
@@ -103,15 +122,29 @@ namespace Assets.Scripts.Actions
             return "Shoot";
         }
 
+        private WeaponSO GetWeaponData()
+        {
+            Weapon weapon = unit.GetWeapon();
+            return weapon != null ? weapon.GetData() : null;
+        }
+
         public override List<GridPosition> GetValidActionGridPositionList()
         {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
 
+            WeaponSO weaponData = GetWeaponData();
+
+            if (weaponData == null)
+            {
+                return validGridPositionList;
+            }
+
+
             GridPosition unitGridPosition = unit.GetGridPosition();
 
-            for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+            for (int x = -weaponData.Range; x <= weaponData.Range; x++)
             {
-                for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+                for (int z = -weaponData.Range; z <= weaponData.Range; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
                     GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -122,7 +155,7 @@ namespace Assets.Scripts.Actions
                     }
 
                     int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                    if (testDistance > maxShootDistance)
+                    if (testDistance > weaponData.Range)
                     {
                         continue;
                     }

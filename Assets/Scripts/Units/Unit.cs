@@ -2,6 +2,7 @@ using Assets.Scripts.ActionEconomies;
 using Assets.Scripts.Actions;
 using Assets.Scripts.Grids;
 using Assets.Scripts.Squads;
+using Assets.Scripts.Weapons;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace Assets.Scripts.Units
 
         [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
         [SerializeField] private bool isEnemy;
+        [SerializeField] private UnitRagdoll unitRagdoll;
+        [SerializeField] private WeaponSO weaponData;
+        [SerializeField] private Transform weaponSocket;
 
 
         private List<ResourceTypeSO> resourceTypes;
@@ -25,11 +29,15 @@ namespace Assets.Scripts.Units
         private MoveAction moveAction;
         private SpinAction spinAction;
         private BaseAction[] baseActionArray;
+        private DamageInfo lastDamageInfo;
+        private Weapon weapon;
 
 
         private void Awake()
         {
             healthSystem = GetComponent<HealthSystem>();
+
+            EquipWeapon(weaponData);
 
             RefreshActionReferences();
 
@@ -120,6 +128,8 @@ namespace Assets.Scripts.Units
 
         public List<ResourceTypeSO> GetResourceTypes() => resourceTypes;
 
+        public Weapon GetWeapon() => weapon;
+
         private void InitializeResources(List<ResourceAllotment> allotments)
         {
             resourceTypes = allotments.ConvertAll(a => a.resourceType);
@@ -157,16 +167,44 @@ namespace Assets.Scripts.Units
             return transform.position;
         }
 
-        public void Damage(int damageAmount)
+        public void Damage(DamageInfo damageInfo)
         {
-            healthSystem.Damage(damageAmount);
+            lastDamageInfo = damageInfo;
+            healthSystem.Damage(damageInfo.amount);
         }
 
         private void HealthSystem_OnDead(object sender, EventArgs e)
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
 
+            unitRagdoll.Activate(lastDamageInfo);
+
             Destroy(gameObject);
+        }
+
+        private void EquipWeapon(WeaponSO data)
+        {
+            if (weapon != null) Destroy(weapon.gameObject);
+
+            weaponData = data;
+            if (data == null)
+            {
+                return;
+            }
+
+            if (weaponSocket == null)
+            {
+                Debug.LogWarning($"{name}: weaponSocket is not assigned", this);
+                return;
+            }
+
+            if (data.WeaponPrefab == null)
+            {
+                Debug.LogWarning($"{name}: WeaponPrefab is not assigned", this);
+                return;
+            }
+
+            weapon = Instantiate(data.WeaponPrefab, weaponSocket);
         }
 
 
