@@ -20,7 +20,7 @@ namespace Assets.Scripts.Actions
             transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
             totalSpinAmount += spinAddAmount;
-            if (totalSpinAmount >= 360f)
+            if (totalSpinAmount >= TotalSpinAngle)
             {
                 ActionComplete();
             }

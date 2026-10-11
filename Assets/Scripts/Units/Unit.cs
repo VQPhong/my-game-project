@@ -26,8 +26,6 @@ namespace Assets.Scripts.Units
         private ResourcePool resourcePool = new ResourcePool();
         private GridPosition gridPosition;
         private HealthSystem healthSystem;
-        private MoveAction moveAction;
-        private SpinAction spinAction;
         private BaseAction[] baseActionArray;
         private DamageInfo lastDamageInfo;
         private Weapon weapon;
@@ -137,9 +135,6 @@ namespace Assets.Scripts.Units
         {
             baseActionArray = GetComponents<BaseAction>();
             Array.Sort(baseActionArray, (a, b) => a.GetOrder().CompareTo(b.GetOrder()));
-
-            moveAction = GetComponent<MoveAction>();
-            spinAction = GetComponent<SpinAction>();
         }
 
         public bool IsEnemy()
