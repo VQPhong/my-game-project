@@ -15,43 +15,27 @@ namespace Assets.Scripts.Actions
 
 
         private Vector3 targetPosition;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            targetPosition = transform.position;
-        }
+        private const float MoveSpeed = 4f;
 
         protected override void OnActionUpdate()
         {
-            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, MoveSpeed * Time.deltaTime);
+            TurnTowardsPosition(targetPosition);
 
-            float stoppingDistance = .1f;
-            if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-            {
-                float moveSpeed = 4f;
-                transform.position += moveDirection * moveSpeed * Time.deltaTime;
-            }
-            else
+            if (transform.position == targetPosition)
             {
                 OnStopMoving?.Invoke(this, EventArgs.Empty);
-
                 ActionComplete();
             }
-
-            float rotateSpeed = 10f;
-            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
-        }
-
-
-        public void ResetTargetPosition()
-        {
-            targetPosition = transform.position;
         }
 
         protected override void OnTakeAction(GridPosition gridPosition)
         {
             targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+        }
+
+        protected override void OnTurnComplete()
+        {
             OnStartMoving?.Invoke(this, EventArgs.Empty);
         }
 

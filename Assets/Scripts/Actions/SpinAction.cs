@@ -7,12 +7,16 @@ namespace Assets.Scripts.Actions
     public class SpinAction : BaseAction
     {
 
+        private const float SpinSpeed = 360f;
+        private const float TotalSpinAngle = 360f;
+
         private float totalSpinAmount;
 
+        protected override bool TurnBeforeAction => false;
 
         protected override void OnActionUpdate()
         {
-            float spinAddAmount = 360f * Time.deltaTime;
+            float spinAddAmount = Mathf.Min(SpinSpeed * Time.deltaTime, TotalSpinAngle - totalSpinAmount);
             transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
             totalSpinAmount += spinAddAmount;

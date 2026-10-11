@@ -20,7 +20,6 @@ namespace Assets.Scripts.Actions
 
         private enum State
         {
-            Turning,
             Aiming,
             Shooting,
             Cooloff,
@@ -41,22 +40,13 @@ namespace Assets.Scripts.Actions
         {
             targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-            state = State.Turning;
+            state = State.Aiming;
+            stateTimer = AimingStateTime;
             canShootBullet = true;
         }
 
         protected override void OnActionUpdate()
         {
-            if (state == State.Turning)
-            {
-                if (TurnTowardsPosition(targetUnit.GetWorldPosition()))
-                {
-                    state = State.Aiming;
-                    stateTimer = AimingStateTime;
-                }
-                return;
-            }
-
             stateTimer -= Time.deltaTime;
 
             switch (state)
@@ -117,7 +107,7 @@ namespace Assets.Scripts.Actions
             {
                 amount = weaponData.Damage.Roll(),
                 impactForce = weaponData.ImpactForce,
-                sourcePosition = weapon.GetAttackPoint().position,
+                sourcePosition = attackPointPosition,
                 impactType = weaponData.ImpactType,
                 impactPoint = impactPoint
             };
@@ -156,34 +146,34 @@ namespace Assets.Scripts.Actions
                 for (int z = -weaponData.Range; z <= weaponData.Range; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
-                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+                    GridPosition candidateGridPosition = unitGridPosition + offsetGridPosition;
 
-                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.IsValidGridPosition(candidateGridPosition))
                     {
                         continue;
                     }
 
-                    int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                    if (testDistance > weaponData.Range)
+                    int candidateDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                    if (candidateDistance > weaponData.Range)
                     {
                         continue;
                     }
 
-                    if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(candidateGridPosition))
                     {
                         // Grid Position is empty, no Unit
                         continue;
                     }
 
-                    Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
+                    Unit candidateUnit = LevelGrid.Instance.GetUnitAtGridPosition(candidateGridPosition);
 
-                    if (targetUnit.IsEnemy() == unit.IsEnemy())
+                    if (candidateUnit.IsEnemy() == unit.IsEnemy())
                     {
                         // Both Units on same 'team'
                         continue;
                     }
 
-                    validGridPositionList.Add(testGridPosition);
+                    validGridPositionList.Add(candidateGridPosition);
                 }
             }
 

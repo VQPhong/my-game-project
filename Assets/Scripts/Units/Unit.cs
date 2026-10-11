@@ -48,10 +48,7 @@ namespace Assets.Scripts.Units
         {
             gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             transform.position = LevelGrid.Instance.GetWorldPosition(gridPosition);
-            if (moveAction != null)
-            {
-                moveAction.ResetTargetPosition();
-            }
+
             LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;

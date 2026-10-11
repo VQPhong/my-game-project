@@ -21,16 +21,42 @@ namespace Assets.Scripts.Actions
         protected Unit unit;
         private bool isActive;
         private Action onActionComplete;
-
+        private bool isTurning;
+        private Vector3 facingPosition;
 
         protected virtual void Awake()
         {
             unit = GetComponent<Unit>();
         }
 
+        #region Hooks for derived actions
+
+        protected virtual bool TurnBeforeAction => true;
+
+        protected virtual Vector3 GetFacingPosition(GridPosition gridPosition)
+            => LevelGrid.Instance.GetWorldPosition(gridPosition);
+
+        protected virtual void OnTurnComplete() { }
+
+        protected abstract void OnTakeAction(GridPosition gridPosition);
+
+        protected abstract void OnActionUpdate();
+
+        protected virtual float GetTurnSpeed() => DefaultTurnSpeed;
+
+        #endregion Hooks for derived actions
+
         protected void Update()
         {
             if (!isActive) return;
+
+            if (isTurning)
+            {
+                if (!TurnTowardsPosition(facingPosition)) return;
+                isTurning = false;
+                OnTurnComplete();
+                if (!isActive) return;
+            }
             OnActionUpdate();
         }
 
@@ -41,13 +67,11 @@ namespace Assets.Scripts.Actions
         {
             ActionStart(onActionComplete);
             OnTakeAction(gridPosition);
+            facingPosition = GetFacingPosition(gridPosition);
+            isTurning = TurnBeforeAction;
         }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();
-
-        protected abstract void OnTakeAction(GridPosition gridPosition);
-
-        protected abstract void OnActionUpdate();
 
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
         {
@@ -81,11 +105,9 @@ namespace Assets.Scripts.Actions
 
         public void SetOrder(int newOrder) => order = newOrder;
 
-        protected virtual float GetTurnSpeed() => DefaultTurnSpeed;
-
         protected bool TurnTowardsPosition(Vector3 targetWorldPosition)
         {
-            return TurnTowardsDirection(targetWorldPosition - unit.transform.position);
+            return TurnTowardsDirection(targetWorldPosition - transform.position);
         }
 
         protected bool TurnTowardsDirection(Vector3 direction)
