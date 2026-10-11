@@ -1,6 +1,4 @@
 using Assets.Scripts.Grids;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,29 +7,27 @@ namespace Assets.Scripts.Actions
     public class SpinAction : BaseAction
     {
 
+        private const float SpinSpeed = 360f;
+        private const float TotalSpinAngle = 360f;
+
         private float totalSpinAmount;
 
+        protected override bool TurnBeforeAction => false;
 
-        private void Update()
+        protected override void OnActionUpdate()
         {
-            if (!isActive)
-            {
-                return;
-            }
-
-            float spinAddAmount = 360f * Time.deltaTime;
+            float spinAddAmount = Mathf.Min(SpinSpeed * Time.deltaTime, TotalSpinAngle - totalSpinAmount);
             transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
             totalSpinAmount += spinAddAmount;
-            if (totalSpinAmount >= 360f)
+            if (totalSpinAmount >= TotalSpinAngle)
             {
                 ActionComplete();
             }
         }
 
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            ActionStart(onActionComplete);
             totalSpinAmount = 0f;
         }
 

@@ -1,6 +1,5 @@
 using Assets.Scripts.Grids;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,54 +15,27 @@ namespace Assets.Scripts.Actions
 
 
         private Vector3 targetPosition;
+        private const float MoveSpeed = 4f;
 
-        protected override void Awake()
+        protected override void OnActionUpdate()
         {
-            base.Awake();
-            targetPosition = transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, MoveSpeed * Time.deltaTime);
+            TurnTowardsPosition(targetPosition);
 
-            //if (unitAnimator == null)
-            //{
-            //    unitAnimator = GetComponentInChildren<Animator>();
-            //}
-        }
-
-        private void Update()
-        {
-            if (!isActive)
-            {
-                return;
-            }
-
-            Vector3 moveDirection = (targetPosition - transform.position).normalized;
-
-            float stoppingDistance = .1f;
-            if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-            {
-                float moveSpeed = 4f;
-                transform.position += moveDirection * moveSpeed * Time.deltaTime;
-            }
-            else
+            if (transform.position == targetPosition)
             {
                 OnStopMoving?.Invoke(this, EventArgs.Empty);
-
                 ActionComplete();
             }
-
-            float rotateSpeed = 10f;
-            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
         }
 
-
-        public void ResetTargetPosition()
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            targetPosition = transform.position;
-        }
-
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
-        {
-            ActionStart(onActionComplete);
             targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+        }
+
+        protected override void OnTurnComplete()
+        {
             OnStartMoving?.Invoke(this, EventArgs.Empty);
         }
 
@@ -78,26 +50,26 @@ namespace Assets.Scripts.Actions
                 for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
-                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+                    GridPosition candidateGridPosition = unitGridPosition + offsetGridPosition;
 
-                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.IsValidGridPosition(candidateGridPosition))
                     {
                         continue;
                     }
 
-                    if (unitGridPosition == testGridPosition)
+                    if (unitGridPosition == candidateGridPosition)
                     {
                         // Same Grid Position where the unit is already at
                         continue;
                     }
 
-                    if (LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+                    if (LevelGrid.Instance.HasAnyUnitOnGridPosition(candidateGridPosition))
                     {
                         // Grid Position already occupied with another Unit
                         continue;
                     }
 
-                    validGridPositionList.Add(testGridPosition);
+                    validGridPositionList.Add(candidateGridPosition);
                 }
             }
 

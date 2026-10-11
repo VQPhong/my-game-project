@@ -18,7 +18,6 @@ namespace Assets.Scripts.Actions
             public Vector3 impactPoint;
         }
 
-
         private enum State
         {
             Aiming,
@@ -26,30 +25,33 @@ namespace Assets.Scripts.Actions
             Cooloff,
         }
 
+        private const float ImpactPointSpread = 0.25f;
+        private const float AimingStateTime = 0.3f;
+        private const float ShootingStateTime = 0.1f;
+        private const float CoolOffStateTime = 0.5f;
 
         private State state;
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
-        private const float impactPointSpread = 0.25f;
 
 
-        private void Update()
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            if (!isActive)
-            {
-                return;
-            }
+            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
+            state = State.Aiming;
+            stateTimer = AimingStateTime;
+            canShootBullet = true;
+        }
+
+        protected override void OnActionUpdate()
+        {
             stateTimer -= Time.deltaTime;
 
             switch (state)
             {
                 case State.Aiming:
-                    Vector3 aimDir = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-
-                    float rotateSpeed = 10f;
-                    transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                     break;
                 case State.Shooting:
                     if (canShootBullet)
@@ -68,6 +70,10 @@ namespace Assets.Scripts.Actions
             }
         }
 
+        public override string GetActionName()
+        {
+            return "Shoot";
+        }
 
         private void NextState()
         {
@@ -75,13 +81,11 @@ namespace Assets.Scripts.Actions
             {
                 case State.Aiming:
                     state = State.Shooting;
-                    float shootingStateTime = 0.1f;
-                    stateTimer = shootingStateTime;
+                    stateTimer = ShootingStateTime;
                     break;
                 case State.Shooting:
                     state = State.Cooloff;
-                    float coolOffStateTime = 0.5f;
-                    stateTimer = coolOffStateTime;
+                    stateTimer = CoolOffStateTime;
                     break;
                 case State.Cooloff:
                     ActionComplete();
@@ -96,14 +100,14 @@ namespace Assets.Scripts.Actions
 
             Vector3 attackPointPosition = weapon.GetAttackPoint().position;
             Vector3 impactPoint = targetUnit.GetWorldPosition();
-            impactPoint.y = attackPointPosition.y;               // cùng quy tắc với đạn visual hiện tại
-            impactPoint += UnityEngine.Random.insideUnitSphere * impactPointSpread;
+            impactPoint.y = attackPointPosition.y;
+            impactPoint += UnityEngine.Random.insideUnitSphere * ImpactPointSpread;
 
             DamageInfo damageInfo = new DamageInfo
             {
                 amount = weaponData.Damage.Roll(),
                 impactForce = weaponData.ImpactForce,
-                sourcePosition = weapon.GetAttackPoint().position,
+                sourcePosition = attackPointPosition,
                 impactType = weaponData.ImpactType,
                 impactPoint = impactPoint
             };
@@ -115,11 +119,6 @@ namespace Assets.Scripts.Actions
                 impactPoint = impactPoint
             });
             targetUnit.Damage(damageInfo);
-        }
-
-        public override string GetActionName()
-        {
-            return "Shoot";
         }
 
         private WeaponSO GetWeaponData()
@@ -147,52 +146,38 @@ namespace Assets.Scripts.Actions
                 for (int z = -weaponData.Range; z <= weaponData.Range; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
-                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+                    GridPosition candidateGridPosition = unitGridPosition + offsetGridPosition;
 
-                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.IsValidGridPosition(candidateGridPosition))
                     {
                         continue;
                     }
 
-                    int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                    if (testDistance > weaponData.Range)
+                    int candidateDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                    if (candidateDistance > weaponData.Range)
                     {
                         continue;
                     }
 
-                    if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(candidateGridPosition))
                     {
                         // Grid Position is empty, no Unit
                         continue;
                     }
 
-                    Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
+                    Unit candidateUnit = LevelGrid.Instance.GetUnitAtGridPosition(candidateGridPosition);
 
-                    if (targetUnit.IsEnemy() == unit.IsEnemy())
+                    if (candidateUnit.IsEnemy() == unit.IsEnemy())
                     {
                         // Both Units on same 'team'
                         continue;
                     }
 
-                    validGridPositionList.Add(testGridPosition);
+                    validGridPositionList.Add(candidateGridPosition);
                 }
             }
 
             return validGridPositionList;
         }
-
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
-        {
-            ActionStart(onActionComplete);
-
-            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
-
-            state = State.Aiming;
-            float aimingStateTime = 1f;
-            stateTimer = aimingStateTime;
-
-            canShootBullet = true;
-        }
-
     }
 }

@@ -1,0 +1,45 @@
+using Assets.Scripts.Grids;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Assets.Scripts.Actions
+{
+    public class #SCRIPTNAME# : BaseAction
+    {
+        // ---- Constants ----
+
+        // ---- Events for visuals (UnitAnimator, VFX) ----
+
+        // ---- Runtime state ----
+
+
+        // ===== Required =====
+
+        public override string GetActionName() => "#SCRIPTNAME#";
+
+        public override List<GridPosition> GetValidActionGridPositionList()
+        {
+            List<GridPosition> validGridPositionList = new List<GridPosition>();
+            // TODO: add valid grid positions
+            return validGridPositionList;
+        }
+
+        protected override void OnTakeAction(GridPosition gridPosition)
+        {
+            // Prepare data only: store target, reset state. No visual events here.
+        }
+
+        protected override void OnActionUpdate()
+        {
+            // Runs every frame after turning is done. Call ActionComplete() exactly once.
+            ActionComplete();
+        }
+
+        // ===== Optional: override only when different from default =====
+
+        // protected override bool TurnBeforeAction => false;
+        // protected override Vector3 GetFacingPosition(GridPosition gridPosition) => base.GetFacingPosition(gridPosition);
+        // protected override float GetTurnSpeed() => base.GetTurnSpeed();
+        // protected override void OnTurnComplete() { }
+    }
+}
