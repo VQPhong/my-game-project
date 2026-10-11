@@ -21,17 +21,22 @@ namespace Assets.Scripts.Actions
 
         private enum State
         {
+            Turning,
             Aiming,
             Shooting,
             Cooloff,
         }
 
-
+        private const float ImpactPointSpread = 0.25f;
+        private const float AimingStateTime = 0.3f;
+        private const float ShootingStateTime = 0.1f;
+        private const float CoolOffStateTime = 0.5f;
+        
         private State state;
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
-        private const float impactPointSpread = 0.25f;
+
 
 
         private void Update()
@@ -41,15 +46,21 @@ namespace Assets.Scripts.Actions
                 return;
             }
 
+            if (state == State.Turning)
+            {
+                if (TurnTowardsPosition(targetUnit.GetWorldPosition()))
+                {
+                    state = State.Aiming;
+                    stateTimer = AimingStateTime;
+                }
+                return;
+            }
+
             stateTimer -= Time.deltaTime;
 
             switch (state)
             {
                 case State.Aiming:
-                    Vector3 aimDir = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-
-                    float rotateSpeed = 10f;
-                    transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                     break;
                 case State.Shooting:
                     if (canShootBullet)
@@ -75,13 +86,11 @@ namespace Assets.Scripts.Actions
             {
                 case State.Aiming:
                     state = State.Shooting;
-                    float shootingStateTime = 0.1f;
-                    stateTimer = shootingStateTime;
+                    stateTimer = ShootingStateTime;
                     break;
                 case State.Shooting:
                     state = State.Cooloff;
-                    float coolOffStateTime = 0.5f;
-                    stateTimer = coolOffStateTime;
+                    stateTimer = CoolOffStateTime;
                     break;
                 case State.Cooloff:
                     ActionComplete();
@@ -96,8 +105,8 @@ namespace Assets.Scripts.Actions
 
             Vector3 attackPointPosition = weapon.GetAttackPoint().position;
             Vector3 impactPoint = targetUnit.GetWorldPosition();
-            impactPoint.y = attackPointPosition.y;               // cùng quy tắc với đạn visual hiện tại
-            impactPoint += UnityEngine.Random.insideUnitSphere * impactPointSpread;
+            impactPoint.y = attackPointPosition.y;
+            impactPoint += UnityEngine.Random.insideUnitSphere * ImpactPointSpread;
 
             DamageInfo damageInfo = new DamageInfo
             {
@@ -187,12 +196,8 @@ namespace Assets.Scripts.Actions
 
             targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-            state = State.Aiming;
-            float aimingStateTime = 1f;
-            stateTimer = aimingStateTime;
-
+            state = State.Turning;
             canShootBullet = true;
         }
-
     }
 }

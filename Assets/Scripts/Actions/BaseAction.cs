@@ -9,12 +9,18 @@ namespace Assets.Scripts.Actions
 {
     public abstract class BaseAction : MonoBehaviour
     {
-        protected Unit unit;
-        protected bool isActive;
-        protected Action onActionComplete;
+        protected const float DefaultTurnSpeed = 720f;
+        private const float TurnCompleteAngle = 0.1f;       // Permissible error degrees
+        private const float MinTurnDirectionSqr = 0.0001f;
+
 
         [SerializeField] private List<ActionCost> actionCosts = new List<ActionCost>();
         [SerializeField] private int order = 100;
+
+
+        protected Unit unit;
+        protected bool isActive;
+        protected Action onActionComplete;
 
 
         protected virtual void Awake()
@@ -22,17 +28,19 @@ namespace Assets.Scripts.Actions
             unit = GetComponent<Unit>();
         }
 
+
         public abstract string GetActionName();
 
         public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+
+        public abstract List<GridPosition> GetValidActionGridPositionList();
+
 
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
         {
             List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
             return validGridPositionList.Contains(gridPosition);
         }
-
-        public abstract List<GridPosition> GetValidActionGridPositionList();
 
         public virtual ActionCost[] GetActionCosts()
         {
@@ -59,5 +67,37 @@ namespace Assets.Scripts.Actions
         public int GetOrder() => order;
 
         public void SetOrder(int newOrder) => order = newOrder;
+
+        protected virtual float GetTurnSpeed() => DefaultTurnSpeed;
+
+        protected bool TurnTowardsPosition(Vector3 targetWorldPosition)
+        {
+            return TurnTowardsDirection(targetWorldPosition - unit.transform.position);
+        }
+
+        protected bool TurnTowardsDirection(Vector3 direction)
+        {
+            direction.y = 0f;
+            if (direction.sqrMagnitude < MinTurnDirectionSqr)
+            {
+                return true;
+            }
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            return RotateTowardsTarget(targetRotation);
+        }
+
+        private bool RotateTowardsTarget(Quaternion targetRotation)
+        {
+            transform.rotation =
+                Quaternion.RotateTowards(transform.rotation, targetRotation, GetTurnSpeed() * Time.deltaTime);
+
+            if (Quaternion.Angle(transform.rotation, targetRotation) <= TurnCompleteAngle)
+            {
+                transform.rotation = targetRotation;
+                return true;
+            }
+            return false;
+        }
     }
 }
