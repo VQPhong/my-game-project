@@ -50,26 +50,26 @@ namespace Assets.Scripts.Actions
                 for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
-                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+                    GridPosition candidateGridPosition = unitGridPosition + offsetGridPosition;
 
-                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    if (!LevelGrid.Instance.IsValidGridPosition(candidateGridPosition))
                     {
                         continue;
                     }
 
-                    if (unitGridPosition == testGridPosition)
+                    if (unitGridPosition == candidateGridPosition)
                     {
                         // Same Grid Position where the unit is already at
                         continue;
                     }
 
-                    if (LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+                    if (LevelGrid.Instance.HasAnyUnitOnGridPosition(candidateGridPosition))
                     {
                         // Grid Position already occupied with another Unit
                         continue;
                     }
 
-                    validGridPositionList.Add(testGridPosition);
+                    validGridPositionList.Add(candidateGridPosition);
                 }
             }
 
