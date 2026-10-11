@@ -1,6 +1,4 @@
 using Assets.Scripts.Grids;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,13 +10,8 @@ namespace Assets.Scripts.Actions
         private float totalSpinAmount;
 
 
-        private void Update()
+        protected override void OnActionUpdate()
         {
-            if (!isActive)
-            {
-                return;
-            }
-
             float spinAddAmount = 360f * Time.deltaTime;
             transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
@@ -29,9 +22,8 @@ namespace Assets.Scripts.Actions
             }
         }
 
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            ActionStart(onActionComplete);
             totalSpinAmount = 0f;
         }
 

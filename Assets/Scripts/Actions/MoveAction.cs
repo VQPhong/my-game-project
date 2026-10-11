@@ -1,6 +1,5 @@
 using Assets.Scripts.Grids;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,20 +20,10 @@ namespace Assets.Scripts.Actions
         {
             base.Awake();
             targetPosition = transform.position;
-
-            //if (unitAnimator == null)
-            //{
-            //    unitAnimator = GetComponentInChildren<Animator>();
-            //}
         }
 
-        private void Update()
+        protected override void OnActionUpdate()
         {
-            if (!isActive)
-            {
-                return;
-            }
-
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
             float stoppingDistance = .1f;
@@ -60,9 +49,8 @@ namespace Assets.Scripts.Actions
             targetPosition = transform.position;
         }
 
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            ActionStart(onActionComplete);
             targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
             OnStartMoving?.Invoke(this, EventArgs.Empty);
         }

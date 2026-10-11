@@ -18,7 +18,6 @@ namespace Assets.Scripts.Actions
             public Vector3 impactPoint;
         }
 
-
         private enum State
         {
             Turning,
@@ -31,21 +30,23 @@ namespace Assets.Scripts.Actions
         private const float AimingStateTime = 0.3f;
         private const float ShootingStateTime = 0.1f;
         private const float CoolOffStateTime = 0.5f;
-        
+
         private State state;
         private float stateTimer;
         private Unit targetUnit;
         private bool canShootBullet;
 
 
-
-        private void Update()
+        protected override void OnTakeAction(GridPosition gridPosition)
         {
-            if (!isActive)
-            {
-                return;
-            }
+            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
+            state = State.Turning;
+            canShootBullet = true;
+        }
+
+        protected override void OnActionUpdate()
+        {
             if (state == State.Turning)
             {
                 if (TurnTowardsPosition(targetUnit.GetWorldPosition()))
@@ -79,6 +80,10 @@ namespace Assets.Scripts.Actions
             }
         }
 
+        public override string GetActionName()
+        {
+            return "Shoot";
+        }
 
         private void NextState()
         {
@@ -124,11 +129,6 @@ namespace Assets.Scripts.Actions
                 impactPoint = impactPoint
             });
             targetUnit.Damage(damageInfo);
-        }
-
-        public override string GetActionName()
-        {
-            return "Shoot";
         }
 
         private WeaponSO GetWeaponData()
@@ -188,16 +188,6 @@ namespace Assets.Scripts.Actions
             }
 
             return validGridPositionList;
-        }
-
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
-        {
-            ActionStart(onActionComplete);
-
-            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
-
-            state = State.Turning;
-            canShootBullet = true;
         }
     }
 }

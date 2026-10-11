@@ -19,8 +19,8 @@ namespace Assets.Scripts.Actions
 
 
         protected Unit unit;
-        protected bool isActive;
-        protected Action onActionComplete;
+        private bool isActive;
+        private Action onActionComplete;
 
 
         protected virtual void Awake()
@@ -28,13 +28,26 @@ namespace Assets.Scripts.Actions
             unit = GetComponent<Unit>();
         }
 
+        protected void Update()
+        {
+            if (!isActive) return;
+            OnActionUpdate();
+        }
+
 
         public abstract string GetActionName();
 
-        public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+        public void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        {
+            ActionStart(onActionComplete);
+            OnTakeAction(gridPosition);
+        }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();
 
+        protected abstract void OnTakeAction(GridPosition gridPosition);
+
+        protected abstract void OnActionUpdate();
 
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
         {
@@ -52,7 +65,7 @@ namespace Assets.Scripts.Actions
             actionCosts = costs;
         }
 
-        protected void ActionStart(Action onActionComplete)
+        private void ActionStart(Action onActionComplete)
         {
             isActive = true;
             this.onActionComplete = onActionComplete;
