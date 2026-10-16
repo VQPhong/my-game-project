@@ -8,9 +8,17 @@ namespace Assets.Scripts.Units
     {
 
         public event EventHandler OnDead;
+        public event EventHandler OnDamaged;
 
 
         [SerializeField] private int health = 100;
+        private int healthMax;
+
+        private void Awake()
+        {
+            healthMax = health;
+        }
+
 
         public void Damage(int damageAmount)
         {
@@ -20,6 +28,8 @@ namespace Assets.Scripts.Units
             {
                 health = 0;
             }
+
+            OnDamaged?.Invoke(this, EventArgs.Empty);
 
             if (health == 0)
             {
@@ -34,5 +44,9 @@ namespace Assets.Scripts.Units
             OnDead?.Invoke(this, EventArgs.Empty);
         }
 
+        public float GetHealthNormalized()
+        {
+            return (float)health / healthMax;
+        }
     }
 }
