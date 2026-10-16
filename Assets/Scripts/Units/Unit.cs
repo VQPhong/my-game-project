@@ -121,6 +121,8 @@ namespace Assets.Scripts.Units
 
         public int GetResourceAmount(ResourceTypeSO type) => resourcePool.GetAmount(type);
 
+        public int GetResourceMaxAmount(ResourceTypeSO type) => resourcePool.GetMaxAmount(type);
+
         public List<ResourceTypeSO> GetResourceTypes() => resourceTypes;
 
         public Weapon GetWeapon() => weapon;

@@ -1,3 +1,4 @@
+using Assets.Scripts.UIs;
 using UnityEngine;
 
 namespace Assets.Scripts.ActionEconomies
@@ -19,6 +20,14 @@ namespace Assets.Scripts.ActionEconomies
 
         [Tooltip("In case of regenMode is Increment Each Turn, how much does it regen per turn?")]
         public int regenAmount;
+
+        [Header("UI")]
+        [Tooltip("Where this resource is shown")]
+        public ResourceDisplay display;
+
+        [Tooltip("Pip prefab used when display is WorldPips")]
+        public ResourcePipUI pipPrefab;
+
     }
 
     public enum RegenMode
@@ -27,4 +36,12 @@ namespace Assets.Scripts.ActionEconomies
         IncrementEachTurn,
         Manual
     }
+
+    public enum ResourceDisplay
+    {
+        Hidden,
+        WorldPips,
+        ActionButton
+    }
+
 }
