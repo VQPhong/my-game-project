@@ -1,6 +1,4 @@
 using Assets.Scripts.Weapons;
-using System.Drawing;
-using Unity.AppUI.UI;
 using UnityEngine;
 
 namespace Assets.Scripts.Units
