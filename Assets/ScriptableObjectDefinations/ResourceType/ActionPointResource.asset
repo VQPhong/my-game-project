@@ -17,3 +17,5 @@ MonoBehaviour:
   isShared: 0
   regenMode: 0
   regenAmount: 0
+  display: 1
+  pipPrefab: {fileID: 665630300728592729, guid: 4c0add59f29e46446b87e54a892b8184, type: 3}

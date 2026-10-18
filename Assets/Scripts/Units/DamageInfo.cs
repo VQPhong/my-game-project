@@ -14,5 +14,11 @@ namespace Assets.Scripts.Units
         public float impactForce;
         public ImpactType impactType; 
         public Vector3 impactPoint;
+
+        public Vector3 GetDirection(Vector3 fallback)
+        {
+            Vector3 direction = impactPoint - sourcePosition;
+            return direction.sqrMagnitude < 0.0001f ? fallback : direction.normalized;
+        }
     }
 }

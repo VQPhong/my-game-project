@@ -1,12 +1,13 @@
 using Assets.Scripts.Weapons;
-using System.Drawing;
-using Unity.AppUI.UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Units
 {
     public class UnitRagdoll : MonoBehaviour
     {
+        [SerializeField] private LayerMask ragdollLayerMask;
+
         private Animator animator;
         private Rigidbody[] ragdollRigidbodies;
         private Collider[] ragdollColliders;
@@ -14,11 +15,29 @@ namespace Assets.Scripts.Units
 
         private void Awake() {
             animator = GetComponent<Animator>();
-            ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-            ragdollColliders = GetComponentsInChildren<Collider>();
-
+            CollectRagdollParts();
             SetRagdollActive(false);
         }
+
+        private void CollectRagdollParts()
+        {
+            List<Collider> colliders = new List<Collider>();
+            List<Rigidbody> bodies = new List<Rigidbody>();
+
+            foreach (Collider col in GetComponentsInChildren<Collider>(true))
+            {
+                bool isRagdollLayer = (ragdollLayerMask.value & (1 << col.gameObject.layer)) != 0;
+                Rigidbody body = col.attachedRigidbody;
+                if (!isRagdollLayer || body == null) continue;
+
+                colliders.Add(col);
+                if (!bodies.Contains(body)) bodies.Add(body);
+            }
+
+            ragdollColliders = colliders.ToArray();
+            ragdollRigidbodies = bodies.ToArray();
+        }
+
 
         public void Activate(DamageInfo damageInfo)
         {
@@ -65,7 +84,7 @@ namespace Assets.Scripts.Units
 
         private void ApplyPointImpact(DamageInfo damageInfo)
         {
-            Vector3 direction = damageInfo.impactPoint - damageInfo.sourcePosition;
+            Vector3 direction = damageInfo.GetDirection(-transform.forward);
 
             if (direction.sqrMagnitude < 0.0001f)
             {
@@ -84,21 +103,17 @@ namespace Assets.Scripts.Units
             Rigidbody closestBody = null;
             float closestSqrDistance = float.MaxValue;
 
-            for (int i = 0; i < ragdollRigidbodies.Length; i++)
+            foreach (Collider col in ragdollColliders)
             {
-                Vector3 surfacePoint = ragdollColliders[i].ClosestPoint(point);
-                float sqrDistance = (surfacePoint - point).sqrMagnitude;
-
+                float sqrDistance = (col.ClosestPoint(point) - point).sqrMagnitude;
                 if (sqrDistance < closestSqrDistance)
                 {
                     closestSqrDistance = sqrDistance;
-                    closestBody = ragdollRigidbodies[i];
+                    closestBody = col.attachedRigidbody;
                 }
             }
 
             return closestBody;
         }
-
     }
-
 }

@@ -40,6 +40,11 @@ namespace Assets.Scripts.ActionEconomies
             return pool.TryGetValue(type, out int amount) ? amount : 0;
         }
 
+        public int GetMaxAmount(ResourceTypeSO type)
+        {
+            return maxAmounts.TryGetValue(type, out int max) ? max : 0;
+        }
+
         public void Spend(ResourceTypeSO type, int amount)
         {
             if (pool.ContainsKey(type))

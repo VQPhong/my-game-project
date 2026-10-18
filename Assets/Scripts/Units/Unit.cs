@@ -121,6 +121,8 @@ namespace Assets.Scripts.Units
 
         public int GetResourceAmount(ResourceTypeSO type) => resourcePool.GetAmount(type);
 
+        public int GetResourceMaxAmount(ResourceTypeSO type) => resourcePool.GetMaxAmount(type);
+
         public List<ResourceTypeSO> GetResourceTypes() => resourceTypes;
 
         public Weapon GetWeapon() => weapon;
@@ -169,6 +171,17 @@ namespace Assets.Scripts.Units
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
 
+            if (weapon != null)
+            {
+                // TODO: temprary hard code, will change later (for example, get from weapon's effect force)
+                float weaponDropForce = 2f;
+                float weaponDropUpForce = 1.5f;
+
+                Vector3 direction = lastDamageInfo.GetDirection(-transform.forward);
+                weapon.Drop(direction * weaponDropForce + Vector3.up * weaponDropUpForce);
+                weapon = null;
+            }
+
             unitRagdoll.Activate(lastDamageInfo);
 
             Destroy(gameObject);
@@ -196,7 +209,8 @@ namespace Assets.Scripts.Units
                 return;
             }
 
-            weapon = Instantiate(data.WeaponPrefab, weaponSocket);
+            weapon = Instantiate(data.WeaponPrefab);
+            weapon.AttachTo(weaponSocket);
         }
 
 
