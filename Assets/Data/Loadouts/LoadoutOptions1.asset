@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb4bb36082cf494e8321608456a5c9e, type: 3}
+  m_Name: LoadoutOptions1
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Loadouts.LoadoutOptionsSO
+  maxSquadSize: 4
+  availableWeapons:
+  - {fileID: 11400000, guid: 26c92560491d2cc4ebf28acf76106f42, type: 2}
+  - {fileID: 11400000, guid: 43545ffbb3a56834f850debf02ba4250, type: 2}
+  availableLooks:
+  - {fileID: 11400000, guid: 4018c7e5ae1044e4fa417751b49402de, type: 2}
+  - {fileID: 11400000, guid: a378916bb8aad73479297b2f89d2b2d6, type: 2}
+  availableItems:
+  - {fileID: 11400000, guid: ebcea0a54fcdbfe4b88906093222fafb, type: 2}
+  - {fileID: 11400000, guid: 52e0d3550733f1e4382fb7d3f1bc39df, type: 2}
