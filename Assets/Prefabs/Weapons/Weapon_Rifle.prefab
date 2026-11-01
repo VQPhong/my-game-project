@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4408297299945fd42980ab23b7343947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  data: {fileID: 11400000, guid: 26c92560491d2cc4ebf28acf76106f42, type: 2}
+  data: {fileID: 0}
   attackPoint: {fileID: 3152546212639456966}
   grip: {fileID: 1516452546108727370}
   body: {fileID: 4060660281373552379}

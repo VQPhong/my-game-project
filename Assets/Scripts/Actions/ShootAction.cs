@@ -135,6 +135,7 @@ namespace Assets.Scripts.Actions
 
             if (weaponData == null)
             {
+                Debug.LogWarning($"{unit}: Weapon data not assigned");
                 return validGridPositionList;
             }
 

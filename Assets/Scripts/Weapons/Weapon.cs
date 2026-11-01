@@ -13,6 +13,8 @@ public class Weapon : MonoBehaviour
 
     public WeaponSO GetData() => data;
 
+    public void SetData(WeaponSO newData) => data = newData;
+
     public Transform GetAttackPoint() => attackPoint;
 
     public void Drop(Vector3 impulse)

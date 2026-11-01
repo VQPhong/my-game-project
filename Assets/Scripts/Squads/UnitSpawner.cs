@@ -1,5 +1,6 @@
 using Assets.Scripts.Grids;
 using Assets.Scripts.Units;
+using Assets.Scripts.Weapons;
 using UnityEngine;
 
 namespace Assets.Scripts.Squads
@@ -20,8 +21,15 @@ namespace Assets.Scripts.Squads
             Instance = this;
         }
 
-        public bool TrySpawnUnit(UnitConfigSO config, GridPosition gridPosition)
+        public bool TrySpawnUnit(UnitConfigSO config, GridPosition gridPosition, WeaponSO weaponOverride = null)
         {
+            return TrySpawnUnit(config, gridPosition, weaponOverride, out _);
+        }
+
+        public bool TrySpawnUnit(UnitConfigSO config, GridPosition gridPosition, WeaponSO weaponOverride, out Unit unit)
+        {
+            unit = null;
+
             if (!LevelGrid.Instance.IsValidGridPosition(gridPosition))
             {
                 return false;
@@ -37,8 +45,12 @@ namespace Assets.Scripts.Squads
                 LevelGrid.Instance.GetWorldPosition(gridPosition),
                 Quaternion.identity);
 
-            Unit unit = unitTransform.GetComponent<Unit>();
+            unit = unitTransform.GetComponent<Unit>();
+
             unit.Configure(config);
+
+            if (weaponOverride != null)
+                unit.EquipWeapon(weaponOverride);
 
             return true;
         }
