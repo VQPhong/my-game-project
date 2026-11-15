@@ -22,6 +22,7 @@ namespace Assets.Scripts.Units
         [Tooltip("Weapon for hand-placed units. Spawned units may override it via Configure / EquipWeapon")]
         [SerializeField] private WeaponSO weaponData;
         [SerializeField] private Transform weaponSocket;
+        [SerializeField] private Renderer bodyRenderer;
 
 
         private List<ResourceTypeSO> resourceTypes;
@@ -219,7 +220,19 @@ namespace Assets.Scripts.Units
             weapon.AttachTo(weaponSocket);
         }
 
+        public void ApplyLook(UnitLookSO look)
+        {
+            if (look == null)
+                return;
 
+            if (bodyRenderer == null)
+            {
+                Debug.LogWarning($"{name}: bodyRenderer is not assigned", this);
+                return;
+            }
+
+            bodyRenderer.sharedMaterial = look.Material;
+        }
 
     }
 }

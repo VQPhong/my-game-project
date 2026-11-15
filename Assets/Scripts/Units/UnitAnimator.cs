@@ -11,7 +11,9 @@ namespace Assets.Scripts.Units
         [SerializeField] private Animator animator;
 
 
-        private void Awake()
+        // Start, not Awake: spawned units get their actions from Unit.Configure,
+        // which runs after Awake but before Start
+        private void Start()
         {
             if (TryGetComponent(out MoveAction moveAction))
             {

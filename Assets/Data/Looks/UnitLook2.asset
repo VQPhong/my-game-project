@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: UnitLook2
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Units.UnitLookSO
   displayName: Skin 2
-  material: {fileID: 2100000, guid: 1e3f4dd6698853844b8cab4c33a09c96, type: 2}
+  material: {fileID: 2100000, guid: f685a57b9da560a448bb95374a652f90, type: 2}

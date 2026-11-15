@@ -10,6 +10,7 @@ namespace Assets.Scripts.Actions
             {
                 ActionType.Move => unitObject.AddComponent<MoveAction>(),
                 ActionType.Spin => unitObject.AddComponent<SpinAction>(),
+                ActionType.Shoot => unitObject.AddComponent<ShootAction>(),
                 _ => throw new System.ArgumentOutOfRangeException(nameof(type), type, null),
             };
         }

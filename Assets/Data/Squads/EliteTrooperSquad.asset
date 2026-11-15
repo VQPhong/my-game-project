@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Squad.UnitConfigSO
   unitName: Elite Trooper
   prefab: {fileID: 1468343271575434815, guid: 19f35bcf7cee2c24eada38c86613d615, type: 3}
+  defaultWeapon: {fileID: 0}
   resourceAllotments:
   - resourceType: {fileID: 11400000, guid: 716f9f4e9ad977c48bdeae3c1c28e6eb, type: 2}
     maxAmount: 2
@@ -30,3 +31,8 @@ MonoBehaviour:
     - resourceType: {fileID: 11400000, guid: 716f9f4e9ad977c48bdeae3c1c28e6eb, type: 2}
       amount: 1
     order: 500
+  - actionType: 2
+    actionCosts:
+    - resourceType: {fileID: 11400000, guid: 716f9f4e9ad977c48bdeae3c1c28e6eb, type: 2}
+      amount: 1
+    order: 300
