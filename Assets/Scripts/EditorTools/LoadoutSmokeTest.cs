@@ -52,6 +52,7 @@ namespace Assets.Scripts.EditorTools
                 TestSoldierLoadout(soldier, options);
                 TestSquadLoadout(roster, options);
                 TestCreateDefault(roster, options);
+                TestLoadoutSession(roster, options);
             }
             catch (System.Exception e)
             {
@@ -63,6 +64,8 @@ namespace Assets.Scripts.EditorTools
                 foreach (Object temp in temps)
                     Object.DestroyImmediate(temp);
                 temps.Clear();
+
+                LoadoutSession.Clear();
             }
 
             // Runtime state must never write back into SO assets
@@ -363,6 +366,31 @@ namespace Assets.Scripts.EditorTools
         {
             skipped++;
             Debug.LogWarning($"{LogPrefix} SKIP - {label}");
+        }
+
+        private static void TestLoadoutSession(RosterSO roster, LoadoutOptionsSO options)
+        {
+            LoadoutSession.Clear();
+            Check(LoadoutSession.Current == null && !LoadoutSession.HasSquad, "session starts empty after Clear");
+
+            SquadLoadout squad = SquadLoadout.CreateDefault(roster, options);
+            LoadoutSession.Set(squad);
+            Check(LoadoutSession.Current == squad && LoadoutSession.HasSquad, "Set(squad) stores the same squad");
+
+            // Stored by reference: edits after Set are visible through Current
+            SoldierSO first = squad.Members[0].Soldier;
+            squad.Remove(first);
+            Check(!LoadoutSession.Current.Contains(first), "session sees edits made to the squad after Set");
+
+            LoadoutSession.Set(new SquadLoadout(options));
+            Check(LoadoutSession.Current != null && !LoadoutSession.HasSquad, "empty squad -> HasSquad is false");
+
+            SquadLoadout before = LoadoutSession.Current;
+            Check(Throws<System.ArgumentNullException>(() => LoadoutSession.Set(null)) && LoadoutSession.Current == before,
+                "Set(null) throws and keeps the current squad");
+
+            LoadoutSession.Clear();
+            Check(LoadoutSession.Current == null && !LoadoutSession.HasSquad, "Clear removes the squad");
         }
     }
 }
