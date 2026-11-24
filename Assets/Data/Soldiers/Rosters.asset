@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdd0261a726faa409ae1187f9a00f3e, type: 3}
+  m_Name: Rosters
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Soldiers.RosterSO
+  soldiers:
+  - {fileID: 11400000, guid: c4d1097fc6f97eb4ca97fab3a402a781, type: 2}
+  - {fileID: 11400000, guid: bb7150df9b947a043987ac471cab692f, type: 2}
+  - {fileID: 11400000, guid: 0b23f734da4764443a98e24521b8d237, type: 2}
+  - {fileID: 11400000, guid: 545dacecc1d6ef94fb63d6888a869fed, type: 2}
+  - {fileID: 11400000, guid: 21f69ad9108c6a948940b58577182ef4, type: 2}
+  - {fileID: 11400000, guid: 50009e9c36eb18c449163a3a94220b73, type: 2}

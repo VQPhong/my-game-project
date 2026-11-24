@@ -1,4 +1,5 @@
 using Assets.Scripts.ActionEconomies;
+using Assets.Scripts.Weapons;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,9 @@ namespace Assets.Scripts.Squads
 
         [Tooltip("Prefab to spawn - shared across tiers using same model/skills")]
         public Transform prefab;
+
+        [Tooltip("Weapon equipped when spawned from this config. Leave empty to keep the prefab's weapon")]
+        public WeaponSO defaultWeapon;
 
         [Tooltip("Resource caps for THIS config - overrides ResourceTypeSO.maxAmount when spawned")]
         public List<ResourceAllotment> resourceAllotments;

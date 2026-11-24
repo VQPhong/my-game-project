@@ -646,6 +646,7 @@ MonoBehaviour:
   unitRagdoll: {fileID: 4864222107322974222}
   weaponData: {fileID: 11400000, guid: 26c92560491d2cc4ebf28acf76106f42, type: 2}
   weaponSocket: {fileID: 190852462279560319}
+  bodyRenderer: {fileID: 5745372599769917626}
 --- !u!65 &4506042411312053571
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2306,5 +2307,10 @@ CharacterJoint:
 --- !u!95 &5696616434221914444 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 95485627480488536, guid: 8dbb22b9d53a7664b8619d4c6888d92f, type: 3}
+  m_PrefabInstance: {fileID: 5646750713214280468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &5745372599769917626 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 137043315913542574, guid: 8dbb22b9d53a7664b8619d4c6888d92f, type: 3}
   m_PrefabInstance: {fileID: 5646750713214280468}
   m_PrefabAsset: {fileID: 0}

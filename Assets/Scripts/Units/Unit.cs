@@ -18,8 +18,11 @@ namespace Assets.Scripts.Units
         [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
         [SerializeField] private bool isEnemy;
         [SerializeField] private UnitRagdoll unitRagdoll;
+
+        [Tooltip("Weapon for hand-placed units. Spawned units may override it via Configure / EquipWeapon")]
         [SerializeField] private WeaponSO weaponData;
         [SerializeField] private Transform weaponSocket;
+        [SerializeField] private Renderer bodyRenderer;
 
 
         private List<ResourceTypeSO> resourceTypes;
@@ -80,6 +83,9 @@ namespace Assets.Scripts.Units
             }
 
             RefreshActionReferences();
+
+            if (config.defaultWeapon != null)
+                EquipWeapon(config.defaultWeapon);
         }
 
         public GridPosition GetGridPosition()
@@ -187,7 +193,7 @@ namespace Assets.Scripts.Units
             Destroy(gameObject);
         }
 
-        private void EquipWeapon(WeaponSO data)
+        public void EquipWeapon(WeaponSO data)
         {
             if (weapon != null) Destroy(weapon.gameObject);
 
@@ -210,10 +216,23 @@ namespace Assets.Scripts.Units
             }
 
             weapon = Instantiate(data.WeaponPrefab);
+            weapon.SetData(data);
             weapon.AttachTo(weaponSocket);
         }
 
+        public void ApplyLook(UnitLookSO look)
+        {
+            if (look == null)
+                return;
 
+            if (bodyRenderer == null)
+            {
+                Debug.LogWarning($"{name}: bodyRenderer is not assigned", this);
+                return;
+            }
+
+            bodyRenderer.sharedMaterial = look.Material;
+        }
 
     }
 }
