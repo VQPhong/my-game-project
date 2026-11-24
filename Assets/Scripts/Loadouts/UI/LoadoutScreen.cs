@@ -22,13 +22,14 @@ namespace Assets.Scripts.Loadouts.UI
         public RosterSO Roster => roster;
         public SquadLoadout Squad { get; private set; }
 
+        public event EventHandler OnSelectionChanged;
+        public SoldierSO SelectedSoldier { get; private set; }
 
-        // Squad is ready in Awake, so views can read it from their own Awake / OnEnable
+
         private void Awake()
         {
             if (!HasValidWiring())
             {
-                // Disabled before Start -> Start never runs, no event with a null squad
                 enabled = false;
                 return;
             }
@@ -36,10 +37,10 @@ namespace Assets.Scripts.Loadouts.UI
             Squad = ResolveSquad();
         }
 
-        // First redraw in Start: every view has subscribed by now (Awake / OnEnable run before any Start)
         private void Start()
         {
             NotifySquadChanged();
+            SelectSoldier(Squad.Members.Count > 0 ? Squad.Members[0].Soldier : null);
         }
 
         private bool HasValidWiring()
@@ -61,10 +62,6 @@ namespace Assets.Scripts.Loadouts.UI
             return isValid;
         }
 
-        /// <summary>
-        /// Same source order as BattleSetup: coming back from a battle shows the squad just used.
-        /// Nothing is written to the session here, only Deploy commits the squad.
-        /// </summary>
         private SquadLoadout ResolveSquad()
         {
             bool fromSession = LoadoutSession.HasSquad;
@@ -77,9 +74,6 @@ namespace Assets.Scripts.Loadouts.UI
             return squad;
         }
 
-        /// <summary>
-        /// Call after every successful change to the squad (4.2 / 4.3 add the change methods).
-        /// </summary>
         private void NotifySquadChanged()
         {
             UpdateSquadCountText();
@@ -89,6 +83,46 @@ namespace Assets.Scripts.Loadouts.UI
         private void UpdateSquadCountText()
         {
             squadCountText.text = $"Squad {Squad.Members.Count}/{Squad.MaxSize}";
+        }
+
+        /// <summary>
+        /// Adds the soldier if not in the squad (and selects them), removes them otherwise.
+        /// Rejected adds (full / duplicate / null) change nothing and raise no event.
+        /// </summary>
+        public void ToggleSoldier(SoldierSO soldier)
+        {
+            if (Squad.Contains(soldier))
+            {
+                Squad.Remove(soldier);
+
+                if (SelectedSoldier == soldier)
+                    SelectSoldier(null);
+            }
+            else
+            {
+                if (!Squad.TryAdd(soldier))
+                    return;
+
+                SelectSoldier(soldier);
+            }
+
+            NotifySquadChanged();
+        }
+
+        /// <summary>
+        /// Selects a squad member, or clears the selection with null.
+        /// Soldiers outside the squad are ignored, so SelectedSoldier is always null or a member.
+        /// </summary>
+        public void SelectSoldier(SoldierSO soldier)
+        {
+            if (soldier != null && !Squad.Contains(soldier))
+                return;
+
+            if (soldier == SelectedSoldier)
+                return;
+
+            SelectedSoldier = soldier;
+            OnSelectionChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
