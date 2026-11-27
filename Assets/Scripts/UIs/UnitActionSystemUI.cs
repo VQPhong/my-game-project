@@ -43,6 +43,11 @@ namespace Assets.Scripts.UIs
         }
 
 
+        private void OnDestroy()
+        {
+            Unit.OnAnyResourceChanged -= Unit_OnAnyActionPointsChanged;
+        }
+
         private void CreateUnitActionButtons()
         {
             foreach (Transform buttonTransform in actionButtonContainerTransform)

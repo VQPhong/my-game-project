@@ -49,6 +49,11 @@ namespace Assets.Scripts.Units
             }
         }
 
+        private void OnDestroy()
+        {
+            Unit.OnAnyUnitSpawned -= Unit_OnAnyUnitSpawned;
+        }
+
         private void Update()
         {
             if (isBusy)

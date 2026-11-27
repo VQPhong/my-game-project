@@ -13,6 +13,16 @@ namespace Assets.Scripts.Units
     {
         public static event EventHandler OnAnyResourceChanged;
         public static event EventHandler OnAnyUnitSpawned;
+        public static event EventHandler OnAnyUnitDead;
+
+        // Domain Reload is off: static events keep handlers from the previous Play session
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            OnAnyResourceChanged = null;
+            OnAnyUnitSpawned = null;
+            OnAnyUnitDead = null;
+        }
 
 
         [SerializeField] private List<ResourceAllotment> unitResourceAllotments;
@@ -57,6 +67,15 @@ namespace Assets.Scripts.Units
             OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
 
             healthSystem.OnDead += HealthSystem_OnDead;
+        }
+
+        private void OnDestroy()
+        {
+            // TurnSystem outlives units; a dead unit must stop receiving turn changes
+            if (TurnSystem.Instance != null)
+            {
+                TurnSystem.Instance.OnTurnChanged -= TurnSystem_OnTurnChanged;
+            }
         }
 
         private void Update()
@@ -176,6 +195,9 @@ namespace Assets.Scripts.Units
         private void HealthSystem_OnDead(object sender, EventArgs e)
         {
             LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+
+            // Fired before Destroy: listeners can still read this unit's data
+            OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
 
             if (weapon != null)
             {
